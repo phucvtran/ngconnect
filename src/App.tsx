@@ -7,6 +7,7 @@ import BusinessDetail from "./Components/BusinessDetail";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Login from "./Components/Authentication/Login";
 import Register from "./Components/Authentication/Register";
+import ListingDetailView from "./Components/ListingDetailView/ListingDetailView";
 
 const NotFound = () => {
   return (
@@ -30,7 +31,7 @@ function App() {
         <Route path="*" element={<Navigate to="/404" replace />}></Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
+        <Route path="/listings/:listingId" element={<ListingDetailView />} />
         {/* <Route element={<PrivateRoutes/>}>
           <Route path='/' element={<Home/>}></Route>
         </Route> */}
