@@ -1,6 +1,7 @@
 import Axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
-import { SignInObject } from "../models/User";
+import { SignInObject, UpdateCreateUserDto } from "../models/User";
+import { ApiResponse } from "./commonTypes";
 
 export const axios = Axios.create({
   baseURL: process.env["REACT_APP_API_HOST"],
@@ -20,7 +21,7 @@ axios.interceptors.response.use(
 
 const handleResponseErrors = (error: any) => {
   //TODO: Fix navigate to no access
-
+  console.log(error.response);
   if (!error.response) {
     window.notify("error", error.message);
   } else {
@@ -116,10 +117,16 @@ const requests = {
 const Auth = {
   login: (body: SignInObject) => requests.post<any>(`/users/login`, body),
   logout: (body: { refreshToken: string }) =>
-    requests.post<any>(`/users/logout`, body),
+    requests.post<ApiResponse>(`/users/logout`, body),
+};
+
+const Users = {
+  createUser: (user: UpdateCreateUserDto) =>
+    requests.post<ApiResponse>(`/users/register`, user),
 };
 
 const apiAgent = {
   Auth,
+  Users,
 };
 export default apiAgent;

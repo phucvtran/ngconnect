@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { colors } from "../../style/styleVariables";
 import { Button, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { UpdateCreateUserDto } from "../../models/User";
 import { validateEmail } from "../../utils/helperMethods";
+import apiAgent from "../../utils/apiAgent";
 
 const emptyUser = {
   id: "",
@@ -23,6 +24,7 @@ export default function Register() {
   const [createObj, setCreateObj] = useState<UpdateCreateUserDto>(emptyUser);
   const [confirmPassword, setConfirmPassword] = useState<string>();
   const [warning, setWarning] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleLogin = async (event: any) => {
     if (warning.length) setWarning("");
@@ -45,8 +47,9 @@ export default function Register() {
     }
 
     if (email && password && firstName && lastName) {
-      //TODO: call register api here
-      console.log(email, password);
+      const response = await apiAgent.Users.createUser(createObj);
+      window.notify("success", response?.message);
+      navigate("/login");
     }
   };
 
