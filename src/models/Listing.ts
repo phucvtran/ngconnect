@@ -3,7 +3,7 @@ export type ListingStatus = (typeof ListingStatusList)[number];
 export interface ListingDetails {
   id: string;
   title: string;
-  category: string;
+  categoryId: number;
   price: number;
   description: string;
   createDate: Date;

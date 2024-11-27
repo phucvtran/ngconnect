@@ -1,8 +1,8 @@
 import Axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 import { SignInObject, UpdateCreateUserDto } from "../models/User";
-import { ApiResponse } from "./commonTypes";
 import { UpdateCreateJobListingDto } from "../models/Listing";
+import { ApiResponse, PaginationResponse } from "./commonTypes";
 
 export const axios = Axios.create({
   baseURL: process.env["REACT_APP_API_HOST"],
@@ -129,7 +129,11 @@ const Users = {
 const Listings = {
   createJob: (body: UpdateCreateJobListingDto) =>
     requests.post<ApiResponse>(`/job`, body),
+
+  getAllListings: (params?: string) =>
+    requests.get<PaginationResponse>(`/listings?${params ? params : ""}`),
 };
+
 const apiAgent = {
   Auth,
   Users,

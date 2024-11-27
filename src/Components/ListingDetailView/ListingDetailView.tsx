@@ -11,7 +11,7 @@ import { formatTimeAgo, makeLocaleString } from "../../utils/helperMethods";
 const fakeData = {
   id: "1",
   title: "Fixing Iphone 12's screen",
-  category: "Phone",
+  categoryId: 0,
   price: 95.0,
   description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
@@ -58,7 +58,7 @@ const ListingDetailView = () => {
                 {listingDetails.zipcode}
               </p>
 
-              <p>Category: {listingDetails.category}</p>
+              <p>Category: {listingDetails.categoryId}</p>
             </div>
           </SectionWrapper>
         </Grid>
