@@ -4,6 +4,7 @@ import { colors } from "../../style/styleVariables";
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { validateEmail } from "../../utils/helperMethods";
+// import { axios } from "../../utils/apiAgent";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -27,6 +28,29 @@ export default function Login() {
     if (email && password) {
       //TODO: call sign in api here
       console.log(email, password);
+      // const response = await apiAgent.Auth.login({ email, password });
+      // console.log(response);
+
+      let response;
+      try {
+        // not through api agent because don't attach token for this public route
+        // response = await axios.post<any>(
+        //   "http://18.222.224.69:8080/api/users/login",
+        //   // "https://api.sampleapis.com/coffee/hot",
+        //   { email, password }
+        // );
+        response = await fetch("http://localhost:8080/api/users/login");
+        console.log(response.json());
+      } catch (e: any) {
+        console.log(e);
+        const errorObject = e?.response?.data;
+        if (errorObject) {
+          // unauthorized error or not found error
+          console.log(errorObject);
+        }
+      }
+
+      window.notify("success", "abc");
     }
   };
 
