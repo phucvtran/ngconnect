@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
 import "./Assets/styles/styles.scss";
 import Home from "./Components/Home";
@@ -10,6 +10,7 @@ import Register from "./Components/Authentication/Register";
 import ListingDetailView from "./Components/ListingDetailView/ListingDetailView";
 import GlobalAlert from "./Components/GlobalAlert";
 import PrivateRoutes from "./Components/Authentication/PrivateRoutes";
+import { AuthProvider } from "./Components/Authentication/useAuth";
 
 const NotFound = () => {
   return (
@@ -23,30 +24,28 @@ const NotFound = () => {
 function App() {
   const location = useLocation();
 
-  const [isAuthenticated] = useState<boolean>(
-    !!localStorage.getItem("accessToken")
-  );
-
   return (
     <>
       <GlobalAlert />
-      {location.pathname === "/404" ? null : <Header />}
-      <Routes>
-        {/* <Route path='/' element={<Home/>}></Route> */}
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/business" element={<BusinessDetail />}></Route>
-        <Route path="/404" element={<NotFound />}></Route>
-        <Route path="*" element={<Navigate to="/404" replace />}></Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/listings/:listingId" element={<ListingDetailView />} />
-        <Route path="/listing" element={<ListingDetailView />} />
+      <AuthProvider>
+        {location.pathname === "/404" ? null : <Header />}
+        <Routes>
+          {/* <Route path='/' element={<Home/>}></Route> */}
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/business" element={<BusinessDetail />}></Route>
+          <Route path="/404" element={<NotFound />}></Route>
+          <Route path="*" element={<Navigate to="/404" replace />}></Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/listings/:listingId" element={<ListingDetailView />} />
+          <Route path="/listing" element={<ListingDetailView />} />
 
-        {/*  Put protected routes here  */}
-        <Route element={<PrivateRoutes isAuthenticated={isAuthenticated} />}>
-          <Route path="/createListing" element={<ListingDetailView />} />
-        </Route>
-      </Routes>
+          {/*  Put protected routes here  */}
+          <Route element={<PrivateRoutes />}>
+            <Route path="/createListing" element={<ListingDetailView />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </>
   );
 }

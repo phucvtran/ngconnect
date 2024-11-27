@@ -7,13 +7,11 @@ import { UpdateCreateUserDto } from "../../models/User";
 import { validateEmail } from "../../utils/helperMethods";
 import apiAgent from "../../utils/apiAgent";
 
-const emptyUser = {
-  id: "",
+const emptyUser: UpdateCreateUserDto = {
   firstName: "",
   lastName: "",
   email: "",
   password: "",
-  address: "",
   city: "",
   state: "",
   zipcode: "",
@@ -33,6 +31,7 @@ export default function Register() {
 
     let warningMessage = "";
 
+    // only validate email and password, other required fields are checked by MUI
     if (!validateEmail(email)) warningMessage += `Invalid Email.`;
 
     if (password.length < 8)
@@ -160,6 +159,7 @@ export default function Register() {
             name="city"
             value={createObj.city}
             sx={{ mb: 2 }}
+            required
           />
           <Stack spacing={2} direction="row" sx={{ marginBottom: 2 }}>
             <TextField
@@ -171,6 +171,7 @@ export default function Register() {
               name="state"
               value={createObj.state}
               sx={{ mb: 2 }}
+              required
             />
 
             <TextField
@@ -182,6 +183,7 @@ export default function Register() {
               name="zipcode"
               value={createObj.zipcode}
               sx={{ mb: 2 }}
+              required
             />
           </Stack>
 
@@ -194,6 +196,7 @@ export default function Register() {
             name="phone"
             value={createObj.phone}
             sx={{ mb: 2 }}
+            required
           />
 
           {warning.length ? (

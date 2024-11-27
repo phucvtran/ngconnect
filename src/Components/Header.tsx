@@ -13,12 +13,11 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import styled from "@emotion/styled";
 
 import logo from "../Assets/Images/YVH_Draft_AllWhite_Logo.png";
 import { colors } from "../style/styleVariables";
-import apiAgent from "../utils/apiAgent";
+import { useAuth } from "./Authentication/useAuth";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -26,8 +25,7 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 function ResponsiveAppBar() {
   const navigate = useNavigate();
 
-  const [authorized] = useState<boolean>(!!localStorage.getItem("accessToken"));
-
+  const { isAuthenticated, logout } = useAuth();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -53,22 +51,12 @@ function ResponsiveAppBar() {
   const handleMenuOptionClick = async (option: string) => {
     switch (option) {
       case "Logout":
-        const refreshToken = localStorage.getItem("refreshToken");
-        if (refreshToken) {
-          const response = await apiAgent.Auth.logout({
-            refreshToken,
-          });
-          console.log(response?.message);
-          window.notify("success", response?.message);
-
-          //TODO: learn how to set the authorized status globally
-          localStorage.removeItem("user");
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-
+        const success = await logout();
+        if (success) {
           handleCloseNavMenu();
           navigate("/login");
-        }
+        } else window.notify("error", "Failed to sign out. Try again later.");
+
         break;
       default:
         console.log(option);
@@ -174,7 +162,7 @@ function ResponsiveAppBar() {
             ))}
           </Box>
 
-          {authorized ? (
+          {isAuthenticated ? (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

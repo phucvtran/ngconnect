@@ -4,14 +4,14 @@ import { colors } from "../../style/styleVariables";
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { validateEmail } from "../../utils/helperMethods";
-import apiAgent from "../../utils/apiAgent";
-// import { axios } from "../../utils/apiAgent";
+import { useAuth } from "./useAuth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (event: any) => {
@@ -28,16 +28,9 @@ export default function Login() {
     }
 
     if (email && password) {
-      const response = await apiAgent.Auth.login({ email, password });
-
-      const { refreshToken, accessToken } = response?.token;
-      if (accessToken && refreshToken) {
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-        navigate("/");
-      } else {
-        window.notify("error", "Failed to log in. Try again later.");
-      }
+      const success = await login(email, password);
+      if (success) navigate("/");
+      else window.notify("error", "Failed to log in. Try again later.");
     }
   };
 
