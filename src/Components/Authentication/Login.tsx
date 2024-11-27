@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { colors } from "../../style/styleVariables";
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { validateEmail } from "../../utils/helperMethods";
+import apiAgent from "../../utils/apiAgent";
 // import { axios } from "../../utils/apiAgent";
 
 export default function Login() {
@@ -11,6 +12,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (event: any) => {
     event.preventDefault();
@@ -26,31 +28,16 @@ export default function Login() {
     }
 
     if (email && password) {
-      //TODO: call sign in api here
-      console.log(email, password);
-      // const response = await apiAgent.Auth.login({ email, password });
-      // console.log(response);
+      const response = await apiAgent.Auth.login({ email, password });
 
-      let response;
-      try {
-        // not through api agent because don't attach token for this public route
-        // response = await axios.post<any>(
-        //   "http://18.222.224.69:8080/api/users/login",
-        //   // "https://api.sampleapis.com/coffee/hot",
-        //   { email, password }
-        // );
-        response = await fetch("http://localhost:8080/api/users/login");
-        console.log(response.json());
-      } catch (e: any) {
-        console.log(e);
-        const errorObject = e?.response?.data;
-        if (errorObject) {
-          // unauthorized error or not found error
-          console.log(errorObject);
-        }
+      const { refreshToken, accessToken } = response?.token;
+      if (accessToken && refreshToken) {
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        navigate("/");
+      } else {
+        window.notify("error", "Failed to log in. Try again later.");
       }
-
-      window.notify("success", "abc");
     }
   };
 

@@ -8,6 +8,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Login from "./Components/Authentication/Login";
 import Register from "./Components/Authentication/Register";
 import ListingDetailView from "./Components/ListingDetailView/ListingDetailView";
+import GlobalAlert from "./Components/GlobalAlert";
 
 const NotFound = () => {
   return (
@@ -22,6 +23,7 @@ function App() {
   const location = useLocation();
   return (
     <>
+      <GlobalAlert />
       {location.pathname === "/404" ? null : <Header />}
       <Routes>
         {/* <Route path='/' element={<Home/>}></Route> */}
@@ -32,6 +34,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/listings/:listingId" element={<ListingDetailView />} />
+        <Route path="/listing" element={<ListingDetailView />} />
         {/* <Route element={<PrivateRoutes/>}>
           <Route path='/' element={<Home/>}></Route>
         </Route> */}

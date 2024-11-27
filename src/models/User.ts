@@ -12,3 +12,8 @@ export interface UpdateCreateUserDto {
   zipcode?: string;
   phone?: string;
 }
+
+export interface SignInObject {
+  email: string;
+  password: string;
+}
