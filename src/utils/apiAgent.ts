@@ -115,6 +115,8 @@ const requests = {
 
 const Auth = {
   login: (body: SignInObject) => requests.post<any>(`/users/login`, body),
+  logout: (body: { refreshToken: string }) =>
+    requests.post<any>(`/users/logout`, body),
 };
 
 const apiAgent = {

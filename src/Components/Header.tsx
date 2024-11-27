@@ -18,6 +18,7 @@ import styled from "@emotion/styled";
 
 import logo from "../Assets/Images/YVH_Draft_AllWhite_Logo.png";
 import { colors } from "../style/styleVariables";
+import apiAgent from "../utils/apiAgent";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -25,8 +26,7 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 function ResponsiveAppBar() {
   const navigate = useNavigate();
 
-  // TODO: fix me after doing authorization
-  const [authorized] = useState<boolean>(false);
+  const [authorized] = useState<boolean>(!!localStorage.getItem("accessToken"));
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -50,16 +50,27 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  const handleMenuOptionClick = (option: string) => {
+  const handleMenuOptionClick = async (option: string) => {
     switch (option) {
       case "Logout":
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        handleCloseNavMenu();
-        navigate("/login");
-        break;
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (refreshToken) {
+          const response = await apiAgent.Auth.logout({
+            refreshToken,
+          });
+          window.notify("success", response);
 
+          //TODO: learn how to set the authorized status globally
+          localStorage.removeItem("user");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+
+          handleCloseNavMenu();
+          navigate("/login");
+        }
+        break;
       default:
+        console.log(option);
         break;
     }
   };
