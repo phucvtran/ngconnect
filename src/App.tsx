@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import "./Assets/styles/styles.scss";
 import Home from "./Components/Home";
@@ -9,6 +9,7 @@ import Login from "./Components/Authentication/Login";
 import Register from "./Components/Authentication/Register";
 import ListingDetailView from "./Components/ListingDetailView/ListingDetailView";
 import GlobalAlert from "./Components/GlobalAlert";
+import PrivateRoutes from "./Components/Authentication/PrivateRoutes";
 
 const NotFound = () => {
   return (
@@ -21,6 +22,11 @@ const NotFound = () => {
 
 function App() {
   const location = useLocation();
+
+  const [isAuthenticated] = useState<boolean>(
+    !!localStorage.getItem("accessToken")
+  );
+
   return (
     <>
       <GlobalAlert />
@@ -35,9 +41,11 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/listings/:listingId" element={<ListingDetailView />} />
         <Route path="/listing" element={<ListingDetailView />} />
-        {/* <Route element={<PrivateRoutes/>}>
-          <Route path='/' element={<Home/>}></Route>
-        </Route> */}
+
+        {/*  Put protected routes here  */}
+        <Route element={<PrivateRoutes isAuthenticated={isAuthenticated} />}>
+          <Route path="/createListing" element={<ListingDetailView />} />
+        </Route>
       </Routes>
     </>
   );

@@ -58,7 +58,8 @@ function ResponsiveAppBar() {
           const response = await apiAgent.Auth.logout({
             refreshToken,
           });
-          window.notify("success", response);
+          console.log(response?.message);
+          window.notify("success", response?.message);
 
           //TODO: learn how to set the authorized status globally
           localStorage.removeItem("user");
