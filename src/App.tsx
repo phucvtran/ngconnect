@@ -11,6 +11,7 @@ import ListingDetailView from "./Components/ListingDetailView/ListingDetailView"
 import GlobalAlert from "./Components/GlobalAlert";
 import PrivateRoutes from "./Components/Authentication/PrivateRoutes";
 import { AuthProvider } from "./Components/Authentication/useAuth";
+import CreateListing from "./Components/CreateListing";
 
 const NotFound = () => {
   return (
@@ -42,7 +43,7 @@ function App() {
 
           {/*  Put protected routes here  */}
           <Route element={<PrivateRoutes />}>
-            <Route path="/createListing" element={<ListingDetailView />} />
+            <Route path="/createListing" element={<CreateListing />} />
           </Route>
         </Routes>
       </AuthProvider>

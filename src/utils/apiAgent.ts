@@ -2,6 +2,7 @@ import Axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 import { SignInObject, UpdateCreateUserDto } from "../models/User";
 import { ApiResponse } from "./commonTypes";
+import { UpdateCreateJobListingDto } from "../models/Listing";
 
 export const axios = Axios.create({
   baseURL: process.env["REACT_APP_API_HOST"],
@@ -125,8 +126,13 @@ const Users = {
     requests.post<ApiResponse>(`/users/register`, user),
 };
 
+const Listings = {
+  createJob: (body: UpdateCreateJobListingDto) =>
+    requests.post<ApiResponse>(`/job`, body),
+};
 const apiAgent = {
   Auth,
   Users,
+  Listings,
 };
 export default apiAgent;

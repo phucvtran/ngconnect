@@ -12,3 +12,19 @@ export interface ListingDetails {
   state?: string;
   zipcode?: string;
 }
+
+export interface UpdateCreateListingDto {
+  title: string;
+  description: string;
+  price: number;
+  categoryId: number;
+  city: string;
+  state: string;
+  zipcode: string;
+}
+export interface UpdateCreateJobListingDto extends UpdateCreateListingDto {
+  minRate: number;
+  startDate: Date;
+  maxRate?: number;
+  endDate?: Date;
+}

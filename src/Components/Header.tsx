@@ -161,6 +161,19 @@ function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
+          <Button
+            variant="outlined"
+            onClick={() =>
+              isAuthenticated ? navigate("/createListing") : navigate("/login")
+            }
+            style={{
+              borderRadius: 15,
+              backgroundColor: "white",
+              fontWeight: "bold",
+            }}
+          >
+            Looking for Work
+          </Button>
 
           {isAuthenticated ? (
             <Box sx={{ flexGrow: 0 }}>
@@ -196,9 +209,17 @@ function ResponsiveAppBar() {
               </Menu>
             </Box>
           ) : (
-            <SignInButton onClick={() => navigate("/login")}>
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/login")}
+              style={{
+                borderRadius: 15,
+                backgroundColor: "white",
+                fontWeight: "bold",
+              }}
+            >
               Sign in
-            </SignInButton>
+            </Button>
           )}
         </Toolbar>
       </Container>
@@ -206,13 +227,3 @@ function ResponsiveAppBar() {
   );
 }
 export default ResponsiveAppBar;
-
-const SignInButton = styled.button`
-  background-color: white;
-  border-radius: 15px;
-  border-color: transparent;
-  color: ${colors.primary};
-  padding: 10px 20px;
-  font-size: 18px;
-  font-weight: bold;
-`;
