@@ -14,6 +14,7 @@ import {
 import apiAgent from "../../utils/apiAgent";
 
 import avatar_image from "../../Assets/Images/img_avatar.png";
+import job_icon from "../../Assets/Images/job-search.png";
 import { PaginationResponse } from "../../utils/commonTypes";
 
 const JobDetailView = () => {
@@ -105,28 +106,46 @@ const JobDetailView = () => {
             {jobs.results?.map((job) => {
               return (
                 <SectionWrapper title="" key={job.id}>
-                  <div
-                    className={
-                      job.id === jobDetail.id
-                        ? "selected-job-item job-item"
-                        : "job-item"
-                    }
-                    onClick={() => {
-                      setJobDetail(job);
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-start",
                     }}
                   >
-                    <h2>{job.title}</h2>
-                    <h3>
-                      $
-                      {job.job.minRate +
-                        (job.job.maxRate ? ` - $${job.maxRate}/` : "")}
-                      /hour
-                    </h3>
-                    <p>
-                      {formatTimeAgo(new Date(job.createdDate))} - {job.city},{" "}
-                      {job.state} {job.zipcode}
-                    </p>
-                  </div>
+                    <img
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        borderRadius: "50%",
+                        marginTop: "20px",
+                        marginRight: "20px",
+                      }}
+                      src={job_icon}
+                    ></img>
+
+                    <div
+                      className={
+                        job.id === jobDetail.id
+                          ? "selected-job-item job-item"
+                          : "job-item"
+                      }
+                      onClick={() => {
+                        setJobDetail(job);
+                      }}
+                    >
+                      <h2>{job.title}</h2>
+                      <h3>
+                        $
+                        {job.job.minRate +
+                          (job.job.maxRate ? ` - $${job.maxRate}/` : "")}
+                        /hour
+                      </h3>
+                      <p>
+                        {formatTimeAgo(new Date(job.createdDate))} - {job.city},{" "}
+                        {job.state} {job.zipcode}
+                      </p>
+                    </div>
+                  </Box>
                 </SectionWrapper>
               );
             })}
