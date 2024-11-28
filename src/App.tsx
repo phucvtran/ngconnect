@@ -39,7 +39,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/listings/:listingId" element={<ListingDetailView />} />
-          <Route path="/listing" element={<ListingDetailView />} />
 
           {/*  Put protected routes here  */}
           <Route element={<PrivateRoutes />}>

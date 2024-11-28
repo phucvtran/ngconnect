@@ -96,6 +96,17 @@ const handleResponseErrors = (error: any) => {
   return new Promise(() => {});
 };
 
+// attach token to private api
+const attachToken = (): InternalAxiosRequestConfig<any> => {
+  const accessToken = localStorage.getItem("accessToken");
+
+  return {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  } as InternalAxiosRequestConfig<any>;
+};
+
 // reusable requests object using generic types
 // (passing in request method to the interceptor for PoP token stuff)
 const requests = {
@@ -128,7 +139,7 @@ const Users = {
 
 const Listings = {
   createJob: (body: UpdateCreateJobListingDto) =>
-    requests.post<ApiResponse>(`/job`, body),
+    requests.post<ApiResponse>(`/job`, body, attachToken()),
 
   getAllListings: (params?: string) =>
     requests.get<PaginationResponse>(`/listings?${params ? params : ""}`),

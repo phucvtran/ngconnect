@@ -29,9 +29,24 @@ export default function CreateListing() {
   const navigate = useNavigate();
 
   const createJob = async (event: any) => {
+    event.preventDefault();
+    console.log(createObj);
+    let message = "";
+    if (
+      createObj.endDate &&
+      new Date(createObj.startDate) > new Date(createObj.endDate)
+    ) {
+      message += "End date must be after the start date.";
+    }
+    if (message.length) {
+      setWarning(message);
+      return;
+    }
     const response = await apiAgent.Listings.createJob(createObj);
-    console.log(response?.message);
-    navigate("/");
+
+    const listingId = (response as any)?.listing?.id;
+    window.notify("success", response?.message);
+    listingId ? navigate(`/listings/${listingId}`) : navigate("/");
   };
 
   const handleInputChange = (
@@ -45,10 +60,23 @@ export default function CreateListing() {
     });
   };
 
+  const handleNumberInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.target;
+    if (Number.isNaN(Number(value))) {
+      return;
+    }
+
+    setCreateObj({
+      ...createObj,
+      [name]: Number(value),
+    });
+  };
   return (
     <Container>
       <FormWrapper>
-        <form className="SignInForm" onSubmit={createJob}>
+        <form className="CreateJobForm" onSubmit={createJob}>
           <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
             Looking for a Job
           </Typography>
@@ -57,10 +85,7 @@ export default function CreateListing() {
             sx={{ mb: 2 }}
             onChange={(e) => handleInputChange(e)}
             required
-            variant="outlined"
-            color="secondary"
             size="small"
-            fullWidth
             name="title"
             value={createObj.title}
           />
@@ -69,35 +94,46 @@ export default function CreateListing() {
           </Typography>
           <Stack spacing={2} direction="row" sx={{ marginBottom: 3 }}>
             <TextField
+              type="number"
               label="Min"
-              sx={{ mb: 2 }}
-              onChange={(e) => handleInputChange(e)}
-              required
-              variant="outlined"
-              color="secondary"
-              size="small"
               fullWidth
+              sx={{ mb: 2 }}
+              onChange={(e) => handleNumberInputChange(e)}
+              required
+              size="small"
               name="minRate"
               value={createObj.minRate}
-              defaultValue={null}
+              slotProps={{
+                htmlInput: {
+                  min: 0,
+                },
+              }}
             />
             <TextField
               label="Max (optional)"
-              sx={{ mb: 2 }}
-              onChange={(e) => handleInputChange(e)}
-              variant="outlined"
-              color="secondary"
-              size="small"
               fullWidth
+              sx={{ mb: 2 }}
+              onChange={(e) => handleNumberInputChange(e)}
+              size="small"
               name="maxRate"
               value={createObj.maxRate}
               placeholder="$"
+              type="number"
+              slotProps={{
+                htmlInput: {
+                  min: createObj.minRate + 1,
+                },
+              }}
             />
           </Stack>
+          <Typography sx={{ marginBottom: 1, color: "#00000099" }}>
+            Availability
+          </Typography>
           <Stack spacing={2} direction="row" sx={{ marginBottom: 2 }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                label="Start available date"
+                label="Start "
+                minDate={dayjs()}
                 value={dayjs(createObj.startDate)}
                 onChange={(newValue) =>
                   newValue &&
@@ -112,8 +148,9 @@ export default function CreateListing() {
                 }}
               />
               <DatePicker
-                label="End available date"
-                value={dayjs(createObj.endDate)}
+                label="End (optional)"
+                minDate={dayjs()}
+                value={createObj.endDate ? dayjs(createObj.endDate) : null}
                 onChange={(newValue) =>
                   newValue &&
                   setCreateObj({ ...createObj, endDate: newValue.toDate() })
@@ -144,7 +181,6 @@ export default function CreateListing() {
           <TextField
             label="City"
             onChange={handleInputChange}
-            variant="outlined"
             size="small"
             fullWidth
             name="city"
@@ -156,25 +192,23 @@ export default function CreateListing() {
             <TextField
               label="State"
               onChange={handleInputChange}
-              variant="outlined"
               size="small"
-              fullWidth
               name="state"
               value={createObj.state}
               sx={{ mb: 2 }}
               required
+              fullWidth
             />
 
             <TextField
               label="Zipcode"
               onChange={handleInputChange}
-              variant="outlined"
               size="small"
-              fullWidth
               name="zipcode"
               value={createObj.zipcode}
               sx={{ mb: 2 }}
               required
+              fullWidth
             />
           </Stack>
 
@@ -195,6 +229,8 @@ const Container = styled.div`
   display: flex;
   height: 92vh;
   align-items: center;
+  max-width: 90%;
+  margin: 0px 30px;
 `;
 const FormWrapper = styled.div`
   border: 2px solid ${colors.primary};
