@@ -1,7 +1,7 @@
 import Axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 import { SignInObject, UpdateCreateUserDto } from "../models/User";
-import { UpdateCreateJobListingDto } from "../models/Listing";
+import { ListingDetails, UpdateCreateJobListingDto } from "../models/Listing";
 import { ApiResponse, PaginationResponse } from "./commonTypes";
 
 export const axios = Axios.create({
@@ -143,6 +143,8 @@ const Listings = {
 
   getAllListings: (params?: string) =>
     requests.get<PaginationResponse>(`/listings?${params ? params : ""}`),
+
+  getListingById: (id: string) => requests.get<any>(`/listing/${id}`),
 };
 
 const apiAgent = {

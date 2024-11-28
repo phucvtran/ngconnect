@@ -25,6 +25,6 @@ const Wrapper = styled.div`
   border-top: 2px solid ${colors.lightGray};
   margin: 20px 0;
   h3 {
-    margin: 10px 0;
+    margin: 20px 0;
   }
 `;

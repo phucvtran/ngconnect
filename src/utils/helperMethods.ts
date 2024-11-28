@@ -3,6 +3,10 @@ export function validateEmail(e: string) {
   return regex.test(e);
 }
 
+export function makeLocaleDate(date: string) {
+  return new Date(date).toLocaleString();
+}
+
 export function makeLocaleString(
   value: number | string | undefined | null,
   minFractionDigits: number = 0

@@ -1,5 +1,23 @@
-// button.more-info{
-//     background-color: red;
-//     margin-top: auto;
-//     margin-bottom: 20px;
-// }
+
+
+.pagination-container{
+    display: flex;
+    justify-content: center;
+}
+
+.job-item{
+    padding:1px 0;
+    padding-left: 15px;
+    cursor: pointer;
+}
+
+.job-item:hover{
+    border-radius: 10px;
+    background-color: #e2e2e2;
+}
+
+.selected-job-item{
+    border: solid 2px #1976d2;
+    border-radius: 10px;
+    // background-color: #1976d2;
+    background: transparentize(#1976d2, 0.7);}

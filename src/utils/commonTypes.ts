@@ -9,5 +9,5 @@ export interface PaginationResponse {
   dir: string;
   totalPages: number;
   total: number;
-  results: [];
+  results: any[];
 }

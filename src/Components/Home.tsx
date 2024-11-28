@@ -1,6 +1,8 @@
 import { Box, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
+import Pagination from "@mui/material/Pagination";
+
 import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
@@ -21,33 +23,47 @@ const MenuProps = {
 };
 
 const Home = () => {
-
   const [listings, setListings] = useState<PaginationResponse>();
+  const [listingSearchParams, setListingSearchParams] = useState({
+    limit: 10,
+    page: 1,
+    dir: "DESC",
+    sortBy: "updatedDate",
+    categoryIds: [] as string[],
+  });
 
   useEffect(() => {
-    getProperties();
-  }, []);
+    getAllListings();
+  }, [listingSearchParams]);
 
-  const getProperties = () =>{
-
-    let searchQueryParams:string = "limit=10&page=1&dir=DESC&sortBy=updatedDate";
+  const getAllListings = () => {
+    let searchQueryParams: string = `limit=${listingSearchParams.limit}&page=${listingSearchParams.page}&dir=${listingSearchParams.dir}&sortBy=${listingSearchParams.sortBy}`;
 
     // build params
+    if (listingSearchParams.categoryIds.length > 0) {
+      searchQueryParams +=
+        "&categoryId" + listingSearchParams.categoryIds.join(",");
+    }
 
-    (async()=>{
-        try {
-            const response = await apiAgent.Listings.getAllListings(searchQueryParams);
-            console.log(response)
-            if(response){
-                setListings(response)
-            }
-        } catch (error) {
-            window.alert("error")
+    (async () => {
+      try {
+        const response = await apiAgent.Listings.getAllListings(
+          searchQueryParams
+        );
+        if (response) {
+          setListings(response);
         }
-        
-
+      } catch (error) {
+        window.alert("error");
+      }
     })();
-}
+  };
+
+  const handlePaginationChange = (event: React.ChangeEvent, page: number) => {
+    listingSearchParams.page = page;
+    setListingSearchParams(listingSearchParams);
+    getAllListings();
+  };
 
   return (
     <Container maxWidth="xl">
@@ -64,15 +80,26 @@ const Home = () => {
             spacing={{ xs: 2, md: 3 }}
             columns={{ xs: 6, sm: 6, md: 12, lg: 12 }}
           >
-            {listings?.results.map((prop:any) => {
+            {listings?.results.map((prop: any) => {
               return (
-                <Grid size={{ xs: 12, sm: 6, md:4, lg:4 }} key={prop.id}>
+                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }} key={prop.id}>
                   <ListingCard listing={prop}></ListingCard>
                 </Grid>
               );
             })}
           </Grid>
         </Box>
+      </Container>
+
+      {/* pagination container  */}
+      <Container className="pagination-container" maxWidth="xl">
+        <Pagination
+          size="large"
+          count={listings?.totalPages}
+          showFirstButton
+          showLastButton
+          onChange={(e: any, page: number) => handlePaginationChange(e, page)}
+        />
       </Container>
     </Container>
   );

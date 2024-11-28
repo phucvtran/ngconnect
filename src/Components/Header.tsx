@@ -19,7 +19,7 @@ import logo from "../Assets/Images/YVH_Draft_AllWhite_Logo.png";
 import { colors } from "../style/styleVariables";
 import { useAuth } from "./Authentication/useAuth";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = ["Home", "Job"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
@@ -40,8 +40,13 @@ function ResponsiveAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (page: string) => {
     setAnchorElNav(null);
+    switch (page) {
+      case "Home":
+        navigate("/");
+        break;
+    }
   };
 
   const handleCloseUserMenu = () => {
@@ -53,7 +58,7 @@ function ResponsiveAppBar() {
       case "Logout":
         const success = await logout();
         if (success) {
-          handleCloseNavMenu();
+          handleCloseUserMenu();
           navigate("/login");
         } else window.notify("error", "Failed to sign out. Try again later.");
 
@@ -70,9 +75,10 @@ function ResponsiveAppBar() {
         <Toolbar disableGutters>
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex', backgroundImage: `url(${logo})` }, mr: 1 }} /> */}
           <img
-            style={{ height: "50px", width: "50px" }}
+            style={{ height: "50px", width: "50px", cursor: "pointer" }}
             src={logo}
             alt="Logo"
+            onClick={() => navigate("/")}
           />
           <Typography
             variant="h6"
@@ -90,9 +96,10 @@ function ResponsiveAppBar() {
               // letterSpacing: '.3rem',
               color: "inherit",
               textDecoration: "none",
+              cursor: "pointer",
             }}
           >
-            Your Vacation Hub
+            NG-Connect
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -125,7 +132,7 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={() => handleCloseNavMenu(page)}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -154,7 +161,7 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => handleCloseNavMenu(page)}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
