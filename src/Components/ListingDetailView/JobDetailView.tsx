@@ -85,19 +85,6 @@ const JobDetailView = () => {
     })();
   };
 
-  // const handleJobSelected = (selectedJob: any) => {
-  //   jobs?.results.forEach((job) => {
-  //     if (job.id === selectedJob.id) {
-  //       job.selected = true;
-  //       setJobDetail(job);
-  //     } else {
-  //       job.selected = false;
-  //     }
-  //   });
-  //   console.log(jobDetail);
-  //   setJobs(jobs);
-  // };
-
   return (
     <Container>
       <Grid container spacing={10}>
