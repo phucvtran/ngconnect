@@ -1,7 +1,7 @@
 import Axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 import { SignInObject, UpdateCreateUserDto } from "../models/User";
-import { ListingDetails, UpdateCreateJobListingDto } from "../models/Listing";
+import { UpdateCreateJobListingDto } from "../models/Listing";
 import { ApiResponse, PaginationResponse } from "./commonTypes";
 
 export const axios = Axios.create({
@@ -11,12 +11,47 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 axios.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (error.code === "ERR_CANCELED") {
       // ignore abort error
       return new Promise(() => {});
     }
-    return handleResponseErrors(error);
+
+    // call refresh token when it expired
+    const originalRequest = error.config;
+    if (
+      error.response.status === 401 &&
+      error.response.data.message === "Token expired!" &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true; // Mark the request as retried to avoid infinite loops.
+
+      try {
+        const refreshToken = localStorage.getItem("refreshToken"); // Retrieve the stored refresh token.
+
+        const response = await axios.post("/users/refresh-token", {
+          refreshToken,
+        });
+
+        const { accessToken } = response.data;
+        // Store the new access and refresh tokens.
+        localStorage.setItem("accessToken", accessToken);
+
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        console.log(originalRequest);
+        return axios(originalRequest); // Retry the original request with the new access token.
+      } catch (refreshError) {
+        // Handle refresh token errors by clearing stored tokens and redirecting to the login page.
+        console.error("Token refresh failed:", refreshError);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        window.location.href = "/login";
+        return Promise.reject(refreshError);
+      }
+    }
+
+    // showing error notification
+    else return handleResponseErrors(error);
   }
 );
 
