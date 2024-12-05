@@ -46,7 +46,7 @@ export default function CreateListing() {
 
     const listingId = (response as any)?.listing?.id;
     window.notify("success", response?.message);
-    listingId ? navigate(`/listings/${listingId}`) : navigate("/");
+    listingId ? navigate(`/listings/jobs/${listingId}`) : navigate("/");
   };
 
   const handleInputChange = (

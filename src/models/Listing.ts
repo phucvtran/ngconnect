@@ -11,6 +11,15 @@ export interface ListingDetails {
   city?: string;
   state?: string;
   zipcode?: string;
+
+  job?: {
+    id: number;
+    listingId: number;
+    minRate: number;
+    maxRate?: number;
+    startDate: Date;
+    endDate?: Date;
+  };
 }
 
 export interface UpdateCreateListingDto {
