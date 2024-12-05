@@ -1,3 +1,5 @@
+import { User } from "./User";
+
 export const ListingStatusList = ["ACTIVE", "IN_PROGRESS", "COMPLETED"];
 export type ListingStatus = (typeof ListingStatusList)[number];
 export interface ListingDetails {
@@ -6,8 +8,8 @@ export interface ListingDetails {
   categoryId: number;
   price: number;
   description: string;
-  createDate: Date;
   status: ListingStatus;
+  createdDate: string | number | Date;
   city?: string;
   state?: string;
   zipcode?: string;
@@ -17,9 +19,11 @@ export interface ListingDetails {
     listingId: number;
     minRate: number;
     maxRate?: number;
-    startDate: Date;
-    endDate?: Date;
+    startDate: string;
+    endDate?: string;
   };
+
+  user?: User;
 }
 
 export interface UpdateCreateListingDto {

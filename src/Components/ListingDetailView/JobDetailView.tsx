@@ -6,11 +6,7 @@ import styled from "@emotion/styled";
 import SectionWrapper from "../SectionWrapper";
 import { useEffect, useState } from "react";
 import { ListingDetails } from "../../models/Listing";
-import {
-  formatTimeAgo,
-  makeLocaleString,
-  makeLocaleDate,
-} from "../../utils/helperMethods";
+import { formatTimeAgo, makeLocaleDate } from "../../utils/helperMethods";
 import apiAgent from "../../utils/apiAgent";
 
 import avatar_image from "../../Assets/Images/img_avatar.png";
@@ -19,7 +15,7 @@ import { PaginationResponse } from "../../utils/commonTypes";
 
 const JobDetailView = () => {
   const { listingId } = useParams<{ listingId: string }>();
-  const [jobDetail, setJobDetail] = useState<any>(null);
+  const [jobDetail, setJobDetail] = useState<ListingDetails>();
 
   const [jobs, setJobs] = useState<PaginationResponse>();
 
@@ -32,18 +28,13 @@ const JobDetailView = () => {
   };
 
   useEffect(() => {
-    //TODO: call api to get listing details
-    console.log("listing ID", listingId);
     if (listingId) {
       getJobById(listingId);
     }
   }, []);
 
   useEffect(() => {
-    //TODO: call api to get listing details
-    console.log("listing ID", listingId);
     if (jobDetail && !jobs) {
-      // getJobById(listingId);
       getAllJobs();
     }
   }, [jobDetail]);
@@ -54,7 +45,6 @@ const JobDetailView = () => {
         const response = await apiAgent.Listings.getListingById(id);
         if (response) {
           setJobDetail(response);
-          // getAllJobs();
         }
       } catch (error) {
         window.alert("error");
@@ -107,12 +97,13 @@ const JobDetailView = () => {
                         marginTop: "20px",
                         marginRight: "20px",
                       }}
+                      alt=""
                       src={job_icon}
                     ></img>
 
                     <div
                       className={
-                        job.id === jobDetail.id
+                        job.id === jobDetail?.id
                           ? "selected-job-item job-item"
                           : "job-item"
                       }
@@ -124,7 +115,7 @@ const JobDetailView = () => {
                       <h3>
                         $
                         {job.job.minRate +
-                          (job.job.maxRate ? ` - $${job.maxRate}/` : "")}
+                          (job.job.maxRate ? ` - $${job.job.maxRate}` : "")}
                         /hour
                       </h3>
                       <p>
@@ -146,8 +137,10 @@ const JobDetailView = () => {
                 <h1>{jobDetail.title}</h1>
                 <h2>
                   $
-                  {jobDetail.job.minRate +
-                    (jobDetail.job.maxRate ? ` - $${jobDetail.maxRate}/` : "")}
+                  {jobDetail.job!.minRate +
+                    (jobDetail.job?.maxRate
+                      ? ` - $${jobDetail.job?.maxRate}`
+                      : "")}
                   /hour
                 </h2>
                 <p>
@@ -172,6 +165,7 @@ const JobDetailView = () => {
                       height: "50px",
                       borderRadius: "50%",
                     }}
+                    alt=""
                     src={avatar_image}
                   ></img>
                 </div>
@@ -183,7 +177,7 @@ const JobDetailView = () => {
                       jobDetail?.user?.lastName}
                   </strong>
                   <p>
-                    Available From: {makeLocaleDate(jobDetail.job.startDate)}
+                    Available From: {makeLocaleDate(jobDetail?.job?.startDate)}
                   </p>
                 </div>
               </Box>

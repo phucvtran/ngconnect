@@ -17,7 +17,7 @@ const fakeData = {
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
               nisi`,
-  createDate: new Date("2024-01-15 02:11:59"),
+  createdDate: new Date("2024-01-15 02:11:59"),
   status: "ACTIVE",
   city: "Seattle",
   state: "WA",
@@ -53,7 +53,8 @@ const ListingDetailView = () => {
             <div>
               <h1>${makeLocaleString(listingDetails.price)}</h1>
               <p>
-                Posted about {formatTimeAgo(listingDetails.createDate)} in{" "}
+                Posted about{" "}
+                {formatTimeAgo(new Date(listingDetails.createdDate))} in{" "}
                 {listingDetails.city}, {listingDetails.state}{" "}
                 {listingDetails.zipcode}
               </p>

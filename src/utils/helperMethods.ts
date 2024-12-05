@@ -3,7 +3,8 @@ export function validateEmail(e: string) {
   return regex.test(e);
 }
 
-export function makeLocaleDate(date: string) {
+export function makeLocaleDate(date: string | null | undefined) {
+  if (!date) return "";
   return new Date(date).toLocaleString();
 }
 
