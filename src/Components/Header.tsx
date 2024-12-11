@@ -20,7 +20,7 @@ import { colors } from "../style/styleVariables";
 import { useAuth } from "./Authentication/useAuth";
 
 const pages = ["Home", "Job"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["My Account", "My Post", "Logout"];
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
@@ -58,6 +58,10 @@ function ResponsiveAppBar() {
 
   const handleMenuOptionClick = async (option: string) => {
     switch (option) {
+      case "My Post":
+        console.log("my post");
+        navigate("/myPost");
+        break;
       case "Logout":
         const success = await logout();
         if (success) {
