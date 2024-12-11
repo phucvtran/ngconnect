@@ -3,6 +3,7 @@ import listingImage from "../Assets/Images/listing.jpg";
 import jobImage from "../Assets/Images/job_image.avif";
 import { useNavigate } from "react-router-dom";
 import { ListingDetails } from "../models/Listing";
+import { formatTimeAgo } from "../utils/helperMethods";
 
 interface Props {
   listing: ListingDetails;
@@ -35,9 +36,14 @@ const ListingCard = ({ listing }: Props) => {
               ? `$${listing?.job?.minRate}${
                   listing?.job?.maxRate ? " - $" + listing?.job?.maxRate : ""
                 } per hour`
-              : `${listing.price ? "$" + listing.price : "Unknown price"}`}
+              : listing.price != null && listing.price != undefined
+              ? `$${listing.price}`
+              : "unknown price"}
           </Typography>
-          <Typography>{listing.city + ", " + listing.state}</Typography>
+          <Typography>
+            {formatTimeAgo(new Date(listing.createdDate))} in {listing.city},{" "}
+            {listing.state} {listing.zipcode}
+          </Typography>
         </Box>
       </Box>
     </Box>

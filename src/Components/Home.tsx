@@ -5,7 +5,7 @@ import Pagination from "@mui/material/Pagination";
 
 import React, { useEffect, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ListingCard from "./ListingCard";
 import { ListingDetails } from "../models/Listing";
 import apiAgent from "../utils/apiAgent";
@@ -23,6 +23,7 @@ const MenuProps = {
 };
 
 const Home = () => {
+  const { jobPathParam } = useParams();
   const [listings, setListings] = useState<PaginationResponse>();
   const [listingSearchParams, setListingSearchParams] = useState({
     limit: 10,
@@ -34,13 +35,15 @@ const Home = () => {
 
   useEffect(() => {
     getAllListings();
-  }, [listingSearchParams]);
+  }, [listingSearchParams, jobPathParam]);
 
   const getAllListings = () => {
     let searchQueryParams: string = `limit=${listingSearchParams.limit}&page=${listingSearchParams.page}&dir=${listingSearchParams.dir}&sortBy=${listingSearchParams.sortBy}`;
 
     // build params
-    if (listingSearchParams.categoryIds.length > 0) {
+    if (jobPathParam === "jobs") {
+      searchQueryParams += "&categoryId=1";
+    } else if (listingSearchParams.categoryIds.length > 0) {
       searchQueryParams +=
         "&categoryId" + listingSearchParams.categoryIds.join(",");
     }

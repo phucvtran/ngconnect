@@ -46,6 +46,9 @@ function ResponsiveAppBar() {
       case "Home":
         navigate("/");
         break;
+      case "Job":
+        navigate("/jobs");
+        break;
     }
   };
 

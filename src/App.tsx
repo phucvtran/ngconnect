@@ -33,6 +33,7 @@ function App() {
         <Routes>
           {/* <Route path='/' element={<Home/>}></Route> */}
           <Route path="/" element={<Home />}></Route>
+          <Route path="/:jobPathParam" element={<Home />}></Route>
           <Route path="/404" element={<NotFound />}></Route>
           <Route path="*" element={<Navigate to="/404" replace />}></Route>
           <Route path="/login" element={<Login />} />
