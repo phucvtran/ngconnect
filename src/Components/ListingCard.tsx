@@ -1,19 +1,23 @@
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import listingImage from "../Assets/Images/listing.jpg";
 import jobImage from "../Assets/Images/job_image.avif";
 import { useNavigate } from "react-router-dom";
 import { ListingDetails } from "../models/Listing";
 import { formatTimeAgo } from "../utils/helperMethods";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
 interface Props {
   listing: ListingDetails;
+  allowEdit?: boolean;
 }
 
-const ListingCard = ({ listing }: Props) => {
+const ListingCard = ({ listing, allowEdit = false }: Props) => {
   const navigate = useNavigate();
 
   const isJobListing = listing.categoryId === 1;
-
+  const handleEdit = () => {
+    console.log("edit me");
+  };
   return (
     <Box
       sx={{ cursor: "pointer" }}
@@ -28,7 +32,13 @@ const ListingCard = ({ listing }: Props) => {
           src={isJobListing ? jobImage : listingImage}
         />
       </Box>
-      <Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <Box>
           <Typography sx={{ fontWeight: "bold" }}>{listing.title}</Typography>
           <Typography>
@@ -36,7 +46,7 @@ const ListingCard = ({ listing }: Props) => {
               ? `$${listing?.job?.minRate}${
                   listing?.job?.maxRate ? " - $" + listing?.job?.maxRate : ""
                 } per hour`
-              : listing.price != null && listing.price != undefined
+              : listing.price
               ? `$${listing.price}`
               : "unknown price"}
           </Typography>
@@ -45,6 +55,11 @@ const ListingCard = ({ listing }: Props) => {
             {listing.state} {listing.zipcode}
           </Typography>
         </Box>
+        {allowEdit && (
+          <IconButton size="large" onClick={handleEdit} color="inherit">
+            <ModeEditIcon />
+          </IconButton>
+        )}
       </Box>
     </Box>
   );

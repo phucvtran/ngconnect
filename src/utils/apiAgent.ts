@@ -145,8 +145,10 @@ const attachToken = (): InternalAxiosRequestConfig<any> => {
 // reusable requests object using generic types
 // (passing in request method to the interceptor for PoP token stuff)
 const requests = {
-  get: <T>(url: string) =>
-    axios.get<T>(url, { method: "GET" }).then(responseBody),
+  get: <T>(url: string, config?: InternalAxiosRequestConfig<any>) =>
+    axios
+      .get<T>(url, config ? { ...config, method: "GET" } : { method: "GET" })
+      .then(responseBody),
   post: <T>(url: string, body: {}, config?: InternalAxiosRequestConfig<any>) =>
     axios
       .post<T>(
@@ -180,6 +182,12 @@ const Listings = {
     requests.get<PaginationResponse>(`/listings?${params ? params : ""}`),
 
   getListingById: (id: string) => requests.get<any>(`/listing/${id}`),
+
+  getMyListings: (params?: string) =>
+    requests.get<PaginationResponse>(
+      `/myListings?${params ? params : ""}`,
+      attachToken()
+    ),
 };
 
 const apiAgent = {

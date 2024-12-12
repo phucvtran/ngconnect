@@ -12,7 +12,7 @@ import PrivateRoutes from "./Components/Authentication/PrivateRoutes";
 import { AuthProvider } from "./Components/Authentication/useAuth";
 import CreateListing from "./Components/CreateListing";
 import JobDetailView from "./Components/ListingDetailView/JobDetailView";
-import { Dashboard } from "@mui/icons-material";
+import Dashboard from "./Components/Dashboard";
 
 const NotFound = () => {
   return (
