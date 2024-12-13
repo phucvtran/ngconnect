@@ -2,6 +2,7 @@ export const UserRoleList = ["ADMIN", "BUSINESS", "USER"];
 export type UserRole = (typeof UserRoleList)[number];
 //TODO: fix me
 export interface User {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;

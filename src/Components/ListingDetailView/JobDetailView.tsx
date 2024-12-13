@@ -57,20 +57,20 @@ const JobDetailView = () => {
   };
 
   useEffect(() => {
-    //TODO: call api to get listing details
     if (listingId) {
       getJobById(listingId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    //TODO: call api to get listing details
     if (jobDetail && !jobs) {
       getAllJobs();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobDetail, jobs]);
 
-  const getJobById = (id: string) => {
+  const getJobById = async (id: string) => {
     (async () => {
       try {
         const response = await apiAgent.Listings.getListingById(id);
@@ -83,8 +83,8 @@ const JobDetailView = () => {
     })();
   };
 
-  // load more param support infinate scroll
-  const getAllJobs = (loadMore?: boolean) => {
+  // load more param support infinite scroll
+  const getAllJobs = async (loadMore?: boolean) => {
     let searchQueryParams: string = `limit=${jobSearchParams.limit}&page=${
       loadMore ? ++jobSearchParams.page : jobSearchParams.page
     }&dir=${jobSearchParams.dir}&sortBy=${jobSearchParams.sortBy}&categoryId=${
@@ -119,7 +119,14 @@ const JobDetailView = () => {
       }
     })();
   };
+  const onSuccessAfterEditingListing = async () => {
+    if (listingId) {
+      await getJobById(listingId);
+    }
 
+    //FIXME: can't get updated active job card after updating job
+    await getAllJobs();
+  };
   return (
     <Container>
       <Grid container spacing={10}>
@@ -157,6 +164,7 @@ const JobDetailView = () => {
                           marginRight: "20px",
                         }}
                         src={job_icon}
+                        alt="job"
                       ></img>
 
                       <div
@@ -201,7 +209,8 @@ const JobDetailView = () => {
           <JobDetailComponent
             jobDetail={jobDetail}
             isLargeScreen={isLargeScreen}
-          ></JobDetailComponent>
+            onSuccessAfterEditingListing={onSuccessAfterEditingListing}
+          />
         ) : null}
 
         {jobDetail && !isLargeScreen ? (
@@ -222,7 +231,7 @@ const JobDetailView = () => {
             <JobDetailComponent
               jobDetail={jobDetail}
               isLargeScreen={isLargeScreen}
-            ></JobDetailComponent>
+            />
           </SwipeableDrawer>
         ) : null}
       </Grid>

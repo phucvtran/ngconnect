@@ -28,11 +28,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     const response = await apiAgent.Auth.login({ email, password });
     const responseUser = response?.user;
     console.log(responseUser);
+    console.log(responseUser);
     const { refreshToken, accessToken } = response?.token;
     if (accessToken && refreshToken && responseUser) {
       setUser(response);
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem(
+        "userInfo",
+        JSON.stringify({
+          id: responseUser.id,
+          firstName: responseUser.firstName,
+          lastName: responseUser.lastName,
+        })
+      );
       setIsAuthenticated(true);
       return true;
     }
@@ -48,7 +57,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log(response?.message);
       window.notify("success", response?.message);
 
-      localStorage.removeItem("user");
+      localStorage.removeItem("userInfo");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
 

@@ -27,7 +27,6 @@ const ListingCard = ({
   const isJobListing = listing.categoryId === 1;
   const handleEdit = (e: any) => {
     e.stopPropagation();
-    console.log("edit me");
     setShowEditJobModal(true);
   };
 
@@ -85,34 +84,32 @@ const ListingCard = ({
         </Box>
       </Box>
 
-      {showEditJobModal && isJobListing && (
-        <ModalContainer
-          content={
-            <UpdateCreateJobForm
-              initialObject={{
-                minRate: listing.job?.minRate || 0,
-                startDate: listing.job?.startDate
-                  ? new Date(listing.job!.startDate)
-                  : new Date(),
-                title: listing.title,
-                description: listing.description,
-                categoryId: 1,
-                city: listing.city || "",
-                state: listing.state || "",
-                zipcode: listing.zipcode || "",
-              }}
-              apiCallback={updateJobListing}
-              onSuccess={() => {
-                setShowEditJobModal(false);
-                onSuccessAfterEditingListing && onSuccessAfterEditingListing();
-              }}
-            />
-          }
-          onClose={() => setShowEditJobModal(false)}
-          open={showEditJobModal}
-          title={"Update Job"}
-        />
-      )}
+      <ModalContainer
+        content={
+          <UpdateCreateJobForm
+            initialObject={{
+              minRate: listing.job?.minRate || 0,
+              startDate: listing.job?.startDate
+                ? new Date(listing.job!.startDate)
+                : new Date(),
+              title: listing.title,
+              description: listing.description,
+              categoryId: 1,
+              city: listing.city || "",
+              state: listing.state || "",
+              zipcode: listing.zipcode || "",
+            }}
+            apiCallback={updateJobListing}
+            onSuccess={() => {
+              setShowEditJobModal(false);
+              onSuccessAfterEditingListing && onSuccessAfterEditingListing();
+            }}
+          />
+        }
+        onClose={() => setShowEditJobModal(false)}
+        open={showEditJobModal && isJobListing}
+        title={"Update Job"}
+      />
     </div>
   );
 };

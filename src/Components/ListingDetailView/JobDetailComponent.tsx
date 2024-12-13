@@ -1,13 +1,13 @@
-import { Box, Grid2, IconButton, Modal, Typography } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Button from "@mui/material/Button";
-
-import listingImage from "../Assets/Images/listing.jpg";
-import jobImage from "../Assets/Images/job_image.avif";
-import { Link, useNavigate } from "react-router-dom";
-import { JobDetails, ListingDetails } from "../../models/Listing";
+import {
+  ListingDetails,
+  UpdateCreateJobListingDto,
+} from "../../models/Listing";
 import SectionWrapper from "../SectionWrapper";
 import { formatTimeAgo, makeLocaleDate } from "../../utils/helperMethods";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import avatar_image from "../../Assets/Images/img_avatar.png";
 import { ModalContainer } from "../ModalContainer";
 import { useState } from "react";
@@ -18,19 +18,35 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import apiAgent from "../../utils/apiAgent";
+import UpdateCreateJobForm from "../UpdateCreateJobForm";
 
 interface Props {
   jobDetail: ListingDetails;
   isLargeScreen: boolean;
+  onSuccessAfterEditingListing?: Function;
 }
 
-const JobDetailComponent = ({ jobDetail, isLargeScreen }: Props) => {
-  const navigate = useNavigate();
+const JobDetailComponent = ({
+  jobDetail,
+  isLargeScreen,
+  onSuccessAfterEditingListing,
+}: Props) => {
+  // TODO: fix it this when we set up reddux store
+  const currentUser = localStorage.getItem("userInfo");
+  const currentUserId = currentUser && JSON.parse(currentUser)?.id;
+  const allowEdit = currentUserId && currentUserId === jobDetail?.user?.id;
+
+  const [showEditJobModal, setShowEditJobModal] = useState<boolean>(false);
 
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
   const [reservationDateTimeArray, setReservationDateTimeArray] = useState<
     Dayjs[]
   >([dayjs()]);
+
+  const updateJobListing = async (body: UpdateCreateJobListingDto) => {
+    return await apiAgent.Listings.updateJob(jobDetail!.job!.id, body);
+  };
 
   const handleNewReservationDateTime = () => {
     let tempArray = [...reservationDateTimeArray];
@@ -63,7 +79,23 @@ const JobDetailComponent = ({ jobDetail, isLargeScreen }: Props) => {
       >
         <SectionWrapper title="">
           <div>
-            <h1>{jobDetail.title}</h1>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <h1 style={{ margin: 0 }}>{jobDetail.title}</h1>
+              {allowEdit && (
+                <IconButton
+                  size="large"
+                  onClick={() => setShowEditJobModal(true)}
+                  color="inherit"
+                >
+                  <ModeEditIcon />
+                </IconButton>
+              )}
+            </Box>
             <h2>
               $
               {jobDetail.job.minRate +
@@ -168,7 +200,34 @@ const JobDetailComponent = ({ jobDetail, isLargeScreen }: Props) => {
               </ActionButtonContainer>
             </div>
           }
-        ></ModalContainer>
+        />
+
+        <ModalContainer
+          content={
+            <UpdateCreateJobForm
+              initialObject={{
+                minRate: jobDetail.job?.minRate || 0,
+                startDate: jobDetail.job?.startDate
+                  ? new Date(jobDetail.job!.startDate)
+                  : new Date(),
+                title: jobDetail.title,
+                description: jobDetail.description,
+                categoryId: 1,
+                city: jobDetail.city || "",
+                state: jobDetail.state || "",
+                zipcode: jobDetail.zipcode || "",
+              }}
+              apiCallback={updateJobListing}
+              onSuccess={() => {
+                setShowEditJobModal(false);
+                onSuccessAfterEditingListing && onSuccessAfterEditingListing();
+              }}
+            />
+          }
+          onClose={() => setShowEditJobModal(false)}
+          open={showEditJobModal}
+          title={"Update Job"}
+        />
       </Grid>
     );
   else {
