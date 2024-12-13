@@ -157,8 +157,14 @@ const requests = {
         config ? { ...config, method: "POST" } : { method: "POST" }
       )
       .then(responseBody),
-  put: <T>(url: string, body: {}) =>
-    axios.put<T>(url, body, { method: "PUT" }).then(responseBody),
+  put: <T>(url: string, body: {}, config?: InternalAxiosRequestConfig<any>) =>
+    axios
+      .put<T>(
+        url,
+        body,
+        config ? { ...config, method: "PUT" } : { method: "PUT" }
+      )
+      .then(responseBody),
   delete: <T>(url: string) =>
     axios.delete<T>(url, { method: "DELETE" }).then(responseBody),
 };
@@ -188,6 +194,9 @@ const Listings = {
       `/myListings?${params ? params : ""}`,
       attachToken()
     ),
+
+  updateJob: (id: string, body: UpdateCreateJobListingDto) =>
+    requests.put<ApiResponse>(`/job/${id}`, body, attachToken()),
 };
 
 const apiAgent = {

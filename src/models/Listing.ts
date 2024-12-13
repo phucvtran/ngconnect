@@ -29,7 +29,7 @@ export interface JobDetails {
 export interface UpdateCreateListingDto {
   title: string;
   description: string;
-  price: number;
+  price?: number;
   categoryId: number;
   city: string;
   state: string;
