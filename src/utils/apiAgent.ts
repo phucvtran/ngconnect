@@ -185,13 +185,13 @@ const Listings = {
     requests.post<ApiResponse>(`/job`, body, attachToken()),
 
   getAllListings: (params?: string) =>
-    requests.get<PaginationResponse>(`/listings?${params ? params : ""}`),
+    requests.get<PaginationResponse>(`/listing?${params ? params : ""}`),
 
   getListingById: (id: string) => requests.get<any>(`/listing/${id}`),
 
   getMyListings: (params?: string) =>
     requests.get<PaginationResponse>(
-      `/myListings?${params ? params : ""}`,
+      `/listing/my-listings?${params ? params : ""}`,
       attachToken()
     ),
 
