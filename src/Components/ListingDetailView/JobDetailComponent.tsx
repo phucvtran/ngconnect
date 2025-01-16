@@ -20,6 +20,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import apiAgent from "../../utils/apiAgent";
 import UpdateCreateJobForm from "../UpdateCreateJobForm";
+import { CreateListingRequestDto } from "../../models/ListingRequest";
 
 interface Props {
   jobDetail: ListingDetails;
@@ -40,9 +41,14 @@ const JobDetailComponent = ({
   const [showEditJobModal, setShowEditJobModal] = useState<boolean>(false);
 
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const oneDayFromNow = dayjs().add(25, "hour");
   const [reservationDateTimeArray, setReservationDateTimeArray] = useState<
     Dayjs[]
-  >([dayjs()]);
+  >([oneDayFromNow]);
+
+  const [isValidContactInput, setIsValidContactInput] =
+    useState<boolean>(false);
 
   const updateJobListing = async (body: UpdateCreateJobListingDto) => {
     return await apiAgent.Listings.updateJob(jobDetail!.job!.id, body);
@@ -50,8 +56,9 @@ const JobDetailComponent = ({
 
   const handleNewReservationDateTime = () => {
     let tempArray = [...reservationDateTimeArray];
-    tempArray.push(dayjs());
+    tempArray.push(oneDayFromNow);
     setReservationDateTimeArray(tempArray);
+    validateInput();
   };
 
   const handleOnDateTimeDelete = (index: number) => {
@@ -61,14 +68,63 @@ const JobDetailComponent = ({
   };
 
   const onModalClose = () => {
-    setReservationDateTimeArray([dayjs()]);
+    setReservationDateTimeArray([oneDayFromNow]);
+    setMessage("");
+    setIsValidContactInput(false);
     setShowContactModal(false);
   };
+
+  function validateInput() {
+    //validate empty message
+    if (message.length) {
+      // date must be half day in the future;
+      const oneDayTenMinutesFromNow = oneDayFromNow.subtract(10, "minute");
+      for (let i = 0; i < reservationDateTimeArray.length; i++) {
+        if (reservationDateTimeArray[i].isBefore(oneDayTenMinutesFromNow)) {
+          setIsValidContactInput(false);
+          return;
+        }
+      }
+      setIsValidContactInput(true);
+    } else {
+      setIsValidContactInput(false);
+      return;
+    }
+  }
 
   const handleOnDateTimeChange = (newValue: Dayjs, index: number) => {
     let tempArray = [...reservationDateTimeArray];
     tempArray[index] = newValue;
     setReservationDateTimeArray(tempArray);
+    validateInput();
+  };
+
+  const handleMessageInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.target;
+    if (!value) {
+      setIsValidContactInput(false);
+    } else {
+      validateInput();
+    }
+    setMessage(value);
+  };
+
+  const handleContactSubmit = async () => {
+    const dayArray = reservationDateTimeArray.map((day) => day.toISOString());
+    const requestBody: CreateListingRequestDto = {
+      listingId: jobDetail.id,
+      reservationDates: dayArray,
+      message: message ? message : "",
+    };
+    try {
+      await apiAgent.ListingRequests.createListingRequest(requestBody);
+      setShowContactModal(false);
+      window.notify("success", "Successfully create request for this listing");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (jobDetail.job)
@@ -154,7 +210,7 @@ const JobDetailComponent = ({
             <div>
               <DateTimePickerContainer isLargeScreen={isLargeScreen}>
                 {reservationDateTimeArray.map((date: Dayjs, index: number) => (
-                  <DateTimePickerItem>
+                  <DateTimePickerItem key={index}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DateTimePicker
                         sx={{
@@ -166,7 +222,12 @@ const JobDetailComponent = ({
                         onChange={(newValue: any) =>
                           handleOnDateTimeChange(newValue, index)
                         }
-                        maxDate={dayjs(new Date("2024-12-25"))}
+                        minDate={oneDayFromNow}
+                        maxDate={dayjs(
+                          new Date(
+                            jobDetail.job?.endDate ? jobDetail.job.endDate : ""
+                          )
+                        )}
                       />
                       <IconButton
                         aria-label="delete"
@@ -185,12 +246,16 @@ const JobDetailComponent = ({
 
               <div>
                 <h4>Message:</h4>
-                <MessageInput placeholder="Enter your messages"></MessageInput>
+                <MessageInput
+                  placeholder="Enter your messages"
+                  onChange={handleMessageInputChange}
+                ></MessageInput>
               </div>
               <ActionButtonContainer>
                 <Button
                   variant="contained"
-                  onClick={() => console.log(reservationDateTimeArray)}
+                  onClick={handleContactSubmit}
+                  disabled={!isValidContactInput}
                 >
                   send
                 </Button>

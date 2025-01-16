@@ -13,6 +13,7 @@ import { AuthProvider } from "./Components/Authentication/useAuth";
 import CreateListing from "./Components/CreateListing";
 import JobDetailView from "./Components/ListingDetailView/JobDetailView";
 import Dashboard from "./Components/Dashboard";
+import MyJobDetailView from "./Components/ListingDetailView/MyJobDetailView";
 
 const NotFound = () => {
   return (
@@ -32,11 +33,10 @@ function App() {
       <AuthProvider>
         {location.pathname === "/404" ? null : <Header />}
         <Routes>
-          {/* <Route path='/' element={<Home/>}></Route> */}
           <Route path="/" element={<Home />}></Route>
           <Route path="/:jobPathParam" element={<Home />}></Route>
           <Route path="/404" element={<NotFound />}></Route>
-          <Route path="*" element={<Navigate to="/404" replace />}></Route>
+          {/* <Route path="*" element={<Navigate to="/404" replace />}></Route> */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/listings/:listingId" element={<ListingDetailView />} />
@@ -46,6 +46,11 @@ function App() {
           <Route element={<PrivateRoutes />}>
             <Route path="/createListing" element={<CreateListing />} />
             <Route path="/myPost" element={<Dashboard />} />
+            <Route
+              path="/myPost/jobs/:listingId"
+              element={<MyJobDetailView />}
+            />
+            <Route path="/myPost/:listingId" element={<ListingDetailView />} />
           </Route>
         </Routes>
       </AuthProvider>

@@ -3,6 +3,7 @@ import Axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { SignInObject, UpdateCreateUserDto } from "../models/User";
 import { UpdateCreateJobListingDto } from "../models/Listing";
 import { ApiResponse, PaginationResponse } from "./commonTypes";
+import { CreateListingRequestDto } from "../models/ListingRequest";
 
 export const axios = Axios.create({
   baseURL: process.env["REACT_APP_API_HOST"],
@@ -199,9 +200,21 @@ const Listings = {
     requests.put<ApiResponse>(`/job/${id}`, body, attachToken()),
 };
 
+const ListingRequests = {
+  createListingRequest: (body: CreateListingRequestDto) =>
+    requests.post<ApiResponse>(`/request`, body, attachToken()),
+
+  getRequestsByListingId: (listingId: string, params?: string) =>
+    requests.get<PaginationResponse>(
+      `/request/by-listing-id/${listingId}?${params ? params : ""}`,
+      attachToken()
+    ),
+};
+
 const apiAgent = {
   Auth,
   Users,
   Listings,
+  ListingRequests,
 };
 export default apiAgent;

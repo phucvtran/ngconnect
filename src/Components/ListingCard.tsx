@@ -39,7 +39,11 @@ const ListingCard = ({
       <Box
         sx={{ cursor: "pointer" }}
         onClick={() =>
-          navigate(`/listings/${isJobListing ? "jobs/" : ""}${listing.id}`)
+          navigate(
+            allowEdit
+              ? `/myPost/${isJobListing ? "jobs/" : ""}${listing.id}`
+              : `/listings/${isJobListing ? "jobs/" : ""}${listing.id}`
+          )
         }
       >
         <Box sx={{ height: "250px" }}>
