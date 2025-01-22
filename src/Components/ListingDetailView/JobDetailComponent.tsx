@@ -196,11 +196,16 @@ const JobDetailComponent = ({
         <SectionWrapper title="Description">
           <div>{jobDetail.description}</div>
         </SectionWrapper>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Button variant="contained" onClick={() => setShowContactModal(true)}>
-            Contact
-          </Button>
-        </Box>
+        {allowEdit ? null : (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              variant="contained"
+              onClick={() => setShowContactModal(true)}
+            >
+              Contact
+            </Button>
+          </Box>
+        )}
 
         <ModalContainer
           title={"Contact"}

@@ -1,6 +1,6 @@
 import Grid from "@mui/material/Grid2";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import styled from "@emotion/styled";
 import SectionWrapper from "../SectionWrapper";
 import { useEffect, useState } from "react";
@@ -9,18 +9,14 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import {
-  formatTimeAgo,
-  makeLocaleString,
-  makeLocaleDate,
-} from "../../utils/helperMethods";
+import { formatTimeAgo } from "../../utils/helperMethods";
 import apiAgent from "../../utils/apiAgent";
 
-import avatar_image from "../../Assets/Images/img_avatar.png";
 import job_icon from "../../Assets/Images/job-search.png";
 import { PaginationResponse } from "../../utils/commonTypes";
 import JobDetailComponent from "./JobDetailComponent";
-import ConversationComponent from "./ConversationComponent";
+import { ConversationComponent } from "./ConversationComponent";
+import { paginationSearchParams } from "../../utils/defaultValues";
 
 const JobDetailView = () => {
   const navigate = useNavigate();
@@ -48,14 +44,6 @@ const JobDetailView = () => {
     top: 8,
     left: "calc(50% - 15px)",
   }));
-
-  const jobSearchParams = {
-    limit: 10,
-    page: 1,
-    dir: "DESC",
-    sortBy: "updatedDate",
-    categoryId: "1",
-  };
 
   useEffect(() => {
     if (listingId) {
@@ -86,11 +74,13 @@ const JobDetailView = () => {
 
   // load more param support infinite scroll
   const getAllJobs = async (loadMore?: boolean) => {
-    let searchQueryParams: string = `limit=${jobSearchParams.limit}&page=${
-      loadMore ? ++jobSearchParams.page : jobSearchParams.page
-    }&dir=${jobSearchParams.dir}&sortBy=${jobSearchParams.sortBy}&categoryId=${
-      jobSearchParams.categoryId
-    }`;
+    let searchQueryParams: string = `limit=${
+      paginationSearchParams.limit
+    }&page=${
+      loadMore ? ++paginationSearchParams.page : paginationSearchParams.page
+    }&dir=${paginationSearchParams.dir}&sortBy=${
+      paginationSearchParams.sortBy
+    }&categoryId=${paginationSearchParams.categoryId}`;
 
     (async () => {
       try {
@@ -139,7 +129,7 @@ const JobDetailView = () => {
             <InfiniteScroll
               dataLength={jobs.total}
               next={() => getAllJobs(true)}
-              hasMore={jobs.results.length != jobs.total}
+              hasMore={jobs.results.length !== jobs.total}
               loader={
                 <h4 style={{ textAlign: "center" }}>Loading more jobs...</h4>
               }
@@ -239,7 +229,7 @@ const JobDetailView = () => {
         {true ? (
           <ConversationComponent
             listingRequestId={46}
-            senderId={"e6c572f7-eeb7-44c2-8d4c-c9ac1be9fa51"}
+            senderId={currentUserId}
             receiverId={"e9b8ef55-4db9-4e02-8e14-dabd3abfb50c"}
           ></ConversationComponent>
         ) : null}
@@ -247,11 +237,12 @@ const JobDetailView = () => {
     </Container>
   );
 };
+
+// TODO: fix it this when we set up reddux store
+const currentUser = localStorage.getItem("userInfo");
+const currentUserId = currentUser && JSON.parse(currentUser)?.id;
+//end debug
 export default JobDetailView;
 const Container = styled.div`
   margin: 40px;
 `;
-
-const jobListContainerStyle = {
-  maxHeight: "100vh",
-};

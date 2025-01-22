@@ -3,7 +3,7 @@ import "./App.css";
 import "./Assets/styles/styles.scss";
 import Home from "./Components/Home";
 import Header from "./Components/Header";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Login from "./Components/Authentication/Login";
 import Register from "./Components/Authentication/Register";
 import ListingDetailView from "./Components/ListingDetailView/ListingDetailView";
@@ -14,6 +14,7 @@ import CreateListing from "./Components/CreateListing";
 import JobDetailView from "./Components/ListingDetailView/JobDetailView";
 import Dashboard from "./Components/Dashboard";
 import MyJobDetailView from "./Components/ListingDetailView/MyJobDetailView";
+import InboxView from "./Components/ListingDetailView/InboxView";
 
 const NotFound = () => {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route element={<PrivateRoutes />}>
             <Route path="/createListing" element={<CreateListing />} />
             <Route path="/myPost" element={<Dashboard />} />
+            <Route path="/inbox" element={<InboxView />} />
             <Route
               path="/myPost/jobs/:listingId"
               element={<MyJobDetailView />}

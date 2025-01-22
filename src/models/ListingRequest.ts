@@ -3,7 +3,8 @@ import { User } from "./User";
 export interface ListingRequest {
   id: string;
   listingId: string | number;
-  createdUser: User;
+  createdUserObj: User;
+  createdUser: string;
   createdDate: string | number | Date;
   updatedDate: string | number | Date;
   conversations: Conversation[];

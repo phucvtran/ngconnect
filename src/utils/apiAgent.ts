@@ -183,7 +183,7 @@ const Users = {
 
 const Listings = {
   createJob: (body: UpdateCreateJobListingDto) =>
-    requests.post<ApiResponse>(`/job`, body, attachToken()),
+    requests.post<ApiResponse>(`/listing/job`, body, attachToken()),
 
   getAllListings: (params?: string) =>
     requests.get<PaginationResponse>(`/listing?${params ? params : ""}`),
@@ -197,7 +197,7 @@ const Listings = {
     ),
 
   updateJob: (id: string, body: UpdateCreateJobListingDto) =>
-    requests.put<ApiResponse>(`/job/${id}`, body, attachToken()),
+    requests.put<ApiResponse>(`/listing/job/${id}`, body, attachToken()),
 };
 
 const ListingRequests = {
@@ -207,6 +207,18 @@ const ListingRequests = {
   getRequestsByListingId: (listingId: string, params?: string) =>
     requests.get<PaginationResponse>(
       `/request/by-listing-id/${listingId}?${params ? params : ""}`,
+      attachToken()
+    ),
+
+  getRequestsByUserId: (userId: string, params?: string) =>
+    requests.get<PaginationResponse>(
+      `/request/by-user-id/${userId}?${params ? params : ""}`,
+      attachToken()
+    ),
+
+  getConversationByRequestId: (requestId: string | number, params?: string) =>
+    requests.get<PaginationResponse>(
+      `/request/conversation/${requestId}?${params ? params : ""}`,
       attachToken()
     ),
 };

@@ -13,14 +13,12 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
-import styled from "@emotion/styled";
 
 import logo from "../Assets/Images/YVH_Draft_AllWhite_Logo.png";
-import { colors } from "../style/styleVariables";
 import { useAuth } from "./Authentication/useAuth";
 
 const pages = ["Home", "Job"];
-const settings = ["My Account", "My Post", "Logout"];
+const settings = ["My Account", "My Post", "Inbox", "Logout"];
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
@@ -61,6 +59,9 @@ function ResponsiveAppBar() {
       case "My Post":
         console.log("my post");
         navigate("/myPost");
+        break;
+      case "Inbox":
+        navigate("/inbox");
         break;
       case "Logout":
         const success = await logout();

@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import { useEffect, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import { socket } from "./../../utils/socket";
 import SendIcon from "@mui/icons-material/Send";
 import PersonIcon from "@mui/icons-material/Person";
+import { useSearchParams } from "react-router-dom";
 
 import {
   Box,
@@ -17,10 +18,8 @@ import {
   CircularProgress,
   PaperProps,
 } from "@mui/material";
-
-const socket: Socket = io("http://localhost:5000", {
-  transports: ["websocket"],
-});
+import apiAgent from "../../utils/apiAgent";
+import { PaginationResponse } from "../../utils/commonTypes";
 
 // TODO: fix it this when we set up reddux store
 const currentUser = localStorage.getItem("userInfo");
@@ -31,10 +30,12 @@ interface ConversationProps {
   senderId: string;
   receiverId: string;
   message?: string;
+  onDisconected?: any;
 }
 
 const ChatContainer = styled(Card)(({ theme }) => ({
-  maxWidth: "400px",
+  // maxWidth: "400px",
+  width: "100%",
   margin: "20px auto",
   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
   borderRadius: "16px",
@@ -81,37 +82,46 @@ const InputContainer = styled(Box)({
   gap: "8px",
 });
 
-const Conversation = ({
+export const ConversationComponent = ({
   listingRequestId,
   senderId,
   receiverId,
   message,
 }: ConversationProps) => {
+  const [searchParams] = useSearchParams();
+  const [paginationParams, setSearchParams] = useState({
+    limit: searchParams.get("limit") || 100,
+    page: searchParams.get("page") || 1,
+    dir: searchParams.get("page") || "ASC",
+    sortBy: searchParams.get("page") || "createdDate",
+  });
   const [messages, setMessages] = useState<ConversationProps[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-  // };
-
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages]);
+  const scrollToBottom = () => {
+    if (messagesEndRef && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    getConversation();
+
     // Join the conversation room
     socket.emit("joinConversation", listingRequestId);
 
     // Listen for incoming messages
     socket.on("receiveMessage", (data) => {
-      console.log("message");
-      console.log(data);
       setMessages((prev) => [...prev, data]);
     });
 
     socket.on("connect", () => {
-      console.log("connect to live chat");
+      console.log("connect to live chat. UserID: " + currentUser);
     });
 
     // Cleanup on unmount
@@ -120,6 +130,27 @@ const Conversation = ({
       socket.off("receiveMessage");
     };
   }, [listingRequestId]);
+
+  const getConversation = async () => {
+    let searchQueryParams: string = `limit=${paginationParams.limit}&page=${paginationParams.page}&dir=${paginationParams.dir}&sortBy=${paginationParams.sortBy}`;
+
+    (async () => {
+      try {
+        const response: PaginationResponse =
+          await apiAgent.ListingRequests.getConversationByRequestId(
+            listingRequestId,
+            searchQueryParams
+          );
+        if (response) {
+          // set messages
+          setMessages(response.results);
+        }
+      } catch (error) {
+        console.log(error);
+        window.alert("error");
+      }
+    })();
+  };
 
   const handleSend = () => {
     if (newMessage.trim()) {
@@ -199,5 +230,3 @@ const Conversation = ({
     </ChatContainer>
   );
 };
-
-export default Conversation;
