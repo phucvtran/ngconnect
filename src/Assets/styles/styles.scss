@@ -25,6 +25,6 @@
 
 .job-detail-drawer > .MuiPaper-root{
 
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+    height: calc(50% - 57px);
+    overflow: visible;
 }

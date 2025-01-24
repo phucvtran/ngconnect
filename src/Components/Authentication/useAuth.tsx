@@ -19,7 +19,10 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const authUser: User | null = localStorage.getItem("userInfo")
+    ? JSON.parse(localStorage.getItem("userInfo") as string)
+    : null;
+  const [user, setUser] = useState<User | null>(authUser);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     !!localStorage.getItem("refreshToken")
   );

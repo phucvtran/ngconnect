@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import apiAgent from "../../utils/apiAgent";
 import { PaginationResponse } from "../../utils/commonTypes";
 import { paginationSearchParams } from "../../utils/defaultValues";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SectionWrapper from "../SectionWrapper";
@@ -23,7 +23,10 @@ const ConversationListComponent = ({
   getConversationListBy,
   listingIdOrUserId,
   listingOwnerId,
+  onConversationSelect,
 }: ConversationListProps) => {
+  const isLargeScreen = useMediaQuery("(min-width:500px)");
+
   const [listingRequests, setListingRequest] = useState<PaginationResponse>();
   const [selectedRequest, setSelectedRequest] = useState<ListingRequest>();
   const [showConversationModal, setShowConversationModal] =
@@ -63,6 +66,10 @@ const ConversationListComponent = ({
         if (response) {
           if (!loadMore) {
             setListingRequest(response);
+            if (getConversationListBy === "userId" && onConversationSelect) {
+              isLargeScreen && setSelectedRequest(response.results[0]);
+              onConversationSelect(response.results[0]);
+            }
           } else {
             let moreListingRequest: any = JSON.parse(
               JSON.stringify(listingRequests)
@@ -79,6 +86,18 @@ const ConversationListComponent = ({
       }
     })();
   };
+
+  const onRequestItemClick = (request: any) => {
+    onConversationSelect && onConversationSelect(request);
+
+    socket.disconnect();
+    setSelectedRequest(request);
+    if (getConversationListBy === "listingId") {
+      setShowConversationModal(true);
+    } // open chat
+    socket.connect();
+  };
+
   return (
     <>
       {listingRequests?.results ? (
@@ -121,21 +140,24 @@ const ConversationListComponent = ({
 
                     <div
                       className={
-                        request.id === selectedRequest?.id
+                        request.id === selectedRequest?.id &&
+                        getConversationListBy === "userId" &&
+                        isLargeScreen
                           ? "selected-job-item job-item"
                           : "job-item"
                       }
                       onClick={() => {
-                        socket.disconnect();
-                        setSelectedRequest(request);
-                        setShowConversationModal(true); // open chat
-                        socket.connect();
+                        onRequestItemClick(request);
                       }}
                     >
                       <h2>
-                        {request.createdUserObj.firstName +
-                          " " +
-                          request.createdUserObj.lastName}
+                        {getConversationListBy === "listingId"
+                          ? request.createdUserObj.firstName +
+                            " " +
+                            request.createdUserObj.lastName
+                          : request.listing.user.firstName +
+                            " " +
+                            request.listing.user.lastName}
                       </h2>
                       <h3>Reservasation Dates:</h3>
                       <ul>
@@ -160,7 +182,9 @@ const ConversationListComponent = ({
         </Grid>
       ) : null}
 
-      {selectedRequest && listingOwnerId ? (
+      {selectedRequest &&
+      listingOwnerId &&
+      getConversationListBy === "listingId" ? (
         <ModalContainer
           content={
             <ConversationComponent

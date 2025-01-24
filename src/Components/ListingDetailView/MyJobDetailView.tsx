@@ -8,6 +8,8 @@ import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import apiAgent from "../../utils/apiAgent";
 import JobDetailComponent from "./JobDetailComponent";
 import ConversationListComponent from "./ConversationListComponent";
+import { colors } from "../../style/styleVariables";
+import { Typography } from "@mui/material";
 
 const MyJobDetailView = () => {
   // const navigate = useNavigate();
@@ -25,14 +27,27 @@ const MyJobDetailView = () => {
     setOpen(newOpen);
   };
 
+  const drawerBleeding = 56;
+
   const Puller = styled("div")(({ theme }) => ({
-    width: 30,
+    width: 45,
     height: 6,
     backgroundColor: "grey",
     borderRadius: 3,
     position: "absolute",
-    top: 8,
-    left: "calc(50% - 15px)",
+    top: 12,
+    left: "calc(50% - 22px)",
+  }));
+
+  const StyleBox = styled("div")(({ theme }) => ({
+    position: "absolute",
+    top: -drawerBleeding,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    visibility: "visible",
+    right: 0,
+    left: 0,
+    backgroundColor: colors.lightBlue,
   }));
 
   useEffect(() => {
@@ -87,14 +102,27 @@ const MyJobDetailView = () => {
             open={open}
             onClose={toggleDrawer(false)}
             onOpen={toggleDrawer(true)}
-            swipeAreaWidth={80}
+            swipeAreaWidth={56}
             disableSwipeToOpen={false}
             ModalProps={{
               keepMounted: true,
             }}
             className="job-detail-drawer"
           >
-            <Puller />
+            <StyleBox>
+              <Puller />
+              <Typography
+                sx={{
+                  p: 2,
+                  color: colors.secondaryTextColor,
+                  textAlign: "center",
+                  padding: 0,
+                  margin: "24px 0 8px 0",
+                }}
+              >
+                Listing Description
+              </Typography>
+            </StyleBox>
             <JobDetailComponent
               jobDetail={jobDetail}
               isLargeScreen={isLargeScreen}
