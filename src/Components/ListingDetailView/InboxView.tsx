@@ -1,19 +1,13 @@
-import Grid from "@mui/material/Grid2";
-import { useParams } from "react-router-dom";
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
-import { ListingDetails } from "../../models/Listing";
+import { useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import apiAgent from "../../utils/apiAgent";
-import JobDetailComponent from "./JobDetailComponent";
 import ConversationListComponent from "./ConversationListComponent";
 import { useAuth } from "../Authentication/useAuth";
 import { ListingRequest } from "../../models/ListingRequest";
 import { ConversationComponent } from "./ConversationComponent";
 import { socket } from "../../utils/socket";
 import { colors } from "../../style/styleVariables";
-import { Typography } from "@mui/material";
 
 const InboxView = () => {
   // TODO: fix it this when we set up reddux store

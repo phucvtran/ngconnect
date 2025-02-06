@@ -8,14 +8,12 @@ import { useSearchParams } from "react-router-dom";
 import {
   Box,
   Card,
-  CardContent,
   TextField,
   IconButton,
   Typography,
   Avatar,
   Paper,
   Fade,
-  CircularProgress,
   PaperProps,
 } from "@mui/material";
 import apiAgent from "../../utils/apiAgent";
