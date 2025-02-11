@@ -1,46 +1,69 @@
-# Getting Started with Create React App
+# 🏪 Marketplace & Live Chat Frontend  
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A **React-based frontend** for a **marketplace platform**, where users can post **items, services, and jobs**, and connect via **real-time chat**. This app integrates with the **Express.js + TypeScript backend** and uses **Socket.io** for messaging. 
 
-## Available Scripts
+### Demo
+http://18.217.230.205:3000/login
 
-In the project directory, you can run:
+## Test Accounts:
+| Username  | Password |
+|------------|-------------|
+| admin@gmail.com | password |
+| user@gmail.com | password |
 
-### `npm start`
+### Backend Repository
+https://github.com/phucvtran/ngconnect_backend
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🚀 Features  
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### 🎨 UI & User Experience  
+- **Modern, responsive UI** with React MUI, Emotion Styled 
+- **Dynamic filters & search** for listings (in-progress)  
 
-### `npm test`
+### 🔐 Authentication & Authorization  
+- **JWT-based authentication**  
+- **User roles**: Admin, Business, User  
+- **Persistent login with refresh tokens**  
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🛍️ Listings Management  
+- **Create, edit, and delete listings**  
+- **Filter and sort listings** (in-progress) 
+- **View listing details**  
 
-### `npm run build`
+### 💬 Real-Time Chat  
+- **Live messaging with Socket.io**  
+- **Conversations linked to listings**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🛠️ Tech Stack  
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Technology  | Description |
+|------------|-------------|
+| **Frontend** | React.js + TypeScript |
+| **State Management** | Redux Toolkit |
+| **UI Library** | React MUI + Emotion Styled |
+| **Real-Time** | Socket.io-client |
+| **API Calls** | Axios |
+| **Routing** | React Router |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📦 Installation  
 
-### `npm run eject`
+### 1️⃣ Clone the Repository  
+```sh
+https://github.com/phucvtran/ngconnect.git
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Install Dependencies
+```sh
+npm install
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Create local .env files
+```sh
+REACT_APP_API_HOST=your-api-host/api
+SOCKET_HOST=your-socket-host
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+### run local
+```sh
+npm start
+```
