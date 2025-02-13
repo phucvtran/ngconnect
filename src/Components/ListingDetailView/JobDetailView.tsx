@@ -258,9 +258,6 @@ const JobDetailView = () => {
   );
 };
 
-// TODO: fix it this when we set up reddux store
-const currentUser = localStorage.getItem("userInfo");
-const currentUserId = currentUser && JSON.parse(currentUser)?.id;
 //end debug
 export default JobDetailView;
 const Container = styled.div`

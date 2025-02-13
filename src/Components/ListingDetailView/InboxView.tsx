@@ -3,16 +3,17 @@ import { useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import ConversationListComponent from "./ConversationListComponent";
-import { useAuth } from "../Authentication/useAuth";
 import { ListingRequest } from "../../models/ListingRequest";
 import { ConversationComponent } from "./ConversationComponent";
 import { socket } from "../../utils/socket";
 import { colors } from "../../style/styleVariables";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 const InboxView = () => {
-  // TODO: fix it this when we set up reddux store
-  const { user } = useAuth();
-  const currentUserId = user?.id;
+  // get user info
+  const currentUser = useSelector((state: RootState) => state.user.userInfo);
+  const currentUserId = currentUser.id;
 
   // const navigate = useNavigate();
   // const location = useLocation();

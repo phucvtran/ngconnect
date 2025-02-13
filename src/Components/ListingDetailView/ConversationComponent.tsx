@@ -19,8 +19,8 @@ import {
 import apiAgent from "../../utils/apiAgent";
 import { PaginationResponse } from "../../utils/commonTypes";
 
-// TODO: fix it this when we set up reddux store
-const currentUser = localStorage.getItem("userInfo");
+// Get user info
+const currentUser = localStorage.getItem("user");
 const currentUserId = currentUser && JSON.parse(currentUser)?.id;
 
 interface ConversationProps {

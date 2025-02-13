@@ -21,6 +21,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import apiAgent from "../../utils/apiAgent";
 import UpdateCreateJobForm from "../UpdateCreateJobForm";
 import { CreateListingRequestDto } from "../../models/ListingRequest";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 interface Props {
   jobDetail: ListingDetails;
@@ -33,9 +35,10 @@ const JobDetailComponent = ({
   isLargeScreen,
   onSuccessAfterEditingListing,
 }: Props) => {
-  // TODO: fix it this when we set up reddux store
-  const currentUser = localStorage.getItem("userInfo");
-  const currentUserId = currentUser && JSON.parse(currentUser)?.id;
+  // get user info
+  const currentUser = useSelector((state: RootState) => state.user.userInfo);
+  const currentUserId = currentUser.id;
+
   const allowEdit = currentUserId && currentUserId === jobDetail?.user?.id;
 
   const [showEditJobModal, setShowEditJobModal] = useState<boolean>(false);
