@@ -5,6 +5,9 @@ import { UpdateCreateJobListingDto } from "../models/Listing";
 import { ApiResponse, PaginationResponse } from "./commonTypes";
 import { CreateListingRequestDto } from "../models/ListingRequest";
 
+import { store } from "../redux/store";
+import { logout, updateAccessToken } from "../redux/userSlice";
+
 export const axios = Axios.create({
   baseURL: process.env["REACT_APP_API_HOST"],
 });
@@ -35,8 +38,8 @@ axios.interceptors.response.use(
         });
 
         const { accessToken } = response.data;
-        // Store the new access and refresh tokens.
-        localStorage.setItem("accessToken", accessToken);
+        // Store the new access tokens.
+        store.dispatch(updateAccessToken(accessToken));
 
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         console.log(originalRequest);
@@ -44,8 +47,7 @@ axios.interceptors.response.use(
       } catch (refreshError) {
         // Handle refresh token errors by clearing stored tokens and redirecting to the login page.
         console.error("Token refresh failed:", refreshError);
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        store.dispatch(logout());
         window.location.href = "/login";
         return Promise.reject(refreshError);
       }

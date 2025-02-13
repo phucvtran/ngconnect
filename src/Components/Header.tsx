@@ -15,15 +15,22 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
 
 import logo from "../Assets/Images/YVH_Draft_AllWhite_Logo.png";
-import { useAuth } from "./Authentication/useAuth";
+import apiAgent from "../utils/apiAgent";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/userSlice";
+import { RootState } from "../redux/store";
 
 const pages = ["Home", "Job"];
 const settings = ["My Account", "My Post", "Inbox", "Logout"];
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { isAuthenticated, logout } = useAuth();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.user.refreshToken
+  );
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -57,18 +64,25 @@ function ResponsiveAppBar() {
   const handleMenuOptionClick = async (option: string) => {
     switch (option) {
       case "My Post":
-        console.log("my post");
         navigate("/myPost");
         break;
       case "Inbox":
         navigate("/inbox");
         break;
       case "Logout":
-        const success = await logout();
-        if (success) {
-          handleCloseUserMenu();
-          navigate("/login");
-        } else window.notify("error", "Failed to sign out. Try again later.");
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (refreshToken) {
+          try {
+            const data = await apiAgent.Auth.logout({ refreshToken });
+            if (data) {
+              dispatch(logout());
+              handleCloseUserMenu();
+              navigate("/login");
+            }
+          } catch (error) {
+            window.notify("error", "Failed to sign out. Try again later.");
+          }
+        }
 
         break;
       default:

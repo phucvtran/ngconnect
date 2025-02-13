@@ -9,7 +9,6 @@ import Register from "./Components/Authentication/Register";
 import ListingDetailView from "./Components/ListingDetailView/ListingDetailView";
 import GlobalAlert from "./Components/GlobalAlert";
 import PrivateRoutes from "./Components/Authentication/PrivateRoutes";
-import { AuthProvider } from "./Components/Authentication/useAuth";
 import CreateListing from "./Components/CreateListing";
 import JobDetailView from "./Components/ListingDetailView/JobDetailView";
 import Dashboard from "./Components/Dashboard";
@@ -31,31 +30,26 @@ function App() {
   return (
     <>
       <GlobalAlert />
-      <AuthProvider>
-        {location.pathname === "/404" ? null : <Header />}
-        <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/:jobPathParam" element={<Home />}></Route>
-          <Route path="/404" element={<NotFound />}></Route>
-          {/* <Route path="*" element={<Navigate to="/404" replace />}></Route> */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/listings/:listingId" element={<ListingDetailView />} />
-          <Route path="/listings/jobs/:listingId" element={<JobDetailView />} />
+      {location.pathname === "/404" ? null : <Header />}
+      <Routes>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/:jobPathParam" element={<Home />}></Route>
+        <Route path="/404" element={<NotFound />}></Route>
+        {/* <Route path="*" element={<Navigate to="/404" replace />}></Route> */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/listings/:listingId" element={<ListingDetailView />} />
+        <Route path="/listings/jobs/:listingId" element={<JobDetailView />} />
 
-          {/*  Put protected routes here  */}
-          <Route element={<PrivateRoutes />}>
-            <Route path="/createListing" element={<CreateListing />} />
-            <Route path="/myPost" element={<Dashboard />} />
-            <Route path="/inbox" element={<InboxView />} />
-            <Route
-              path="/myPost/jobs/:listingId"
-              element={<MyJobDetailView />}
-            />
-            <Route path="/myPost/:listingId" element={<ListingDetailView />} />
-          </Route>
-        </Routes>
-      </AuthProvider>
+        {/*  Put protected routes here  */}
+        <Route element={<PrivateRoutes />}>
+          <Route path="/createListing" element={<CreateListing />} />
+          <Route path="/myPost" element={<Dashboard />} />
+          <Route path="/inbox" element={<InboxView />} />
+          <Route path="/myPost/jobs/:listingId" element={<MyJobDetailView />} />
+          <Route path="/myPost/:listingId" element={<ListingDetailView />} />
+        </Route>
+      </Routes>
     </>
   );
 }

@@ -4,15 +4,17 @@ import { colors } from "../../style/styleVariables";
 import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { validateEmail } from "../../utils/helperMethods";
-import { useAuth } from "./useAuth";
+import apiAgent from "../../utils/apiAgent";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/userSlice";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async (event: any) => {
     event.preventDefault();
@@ -28,9 +30,17 @@ export default function Login() {
     }
 
     if (email && password) {
-      const success = await login(email, password);
-      if (success) navigate("/");
-      else window.notify("error", "Failed to log in. Try again later.");
+      const data = await apiAgent.Auth.login({ email, password }); // call login api
+      if (data.token && data.user) {
+        dispatch(
+          login({
+            userInfo: data.user,
+            accessToken: data.token.accessToken,
+            refreshToken: data.token.refreshToken,
+          })
+        );
+        navigate("/");
+      } else window.notify("error", "Failed to log in. Try again later.");
     }
   };
 
