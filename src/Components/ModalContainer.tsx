@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { Close } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import { ReactNode } from "react";
+import { colors } from "../style/styleVariables";
 
 interface ModalProps {
   content: ReactNode;
@@ -45,6 +46,7 @@ const Container = styled.div`
   align-items: center;
   background-color: rgb(108 110 128 / 50%);
   z-index: 1000;
+  color: ${colors.textColor};
 `;
 
 const StyledModalContainer = styled.div<{ size: string }>`
@@ -52,8 +54,8 @@ const StyledModalContainer = styled.div<{ size: string }>`
   top: "50%";
   left: "50%";
   transform: "translate(-50%, -50%)";
-  background-color: white;
-  border: solid 2px #1976d2;
+  background-color: ${colors.primaryBackgroundColor};
+  border: solid 2px ${colors.primary};
   border-radius: 10px;
   width: ${(props) =>
     props.size === "sm" ? "30%" : props.size === "md" ? "40%" : "60%"};
@@ -63,9 +65,9 @@ const StyledModalContainer = styled.div<{ size: string }>`
 const StyledModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  border-bottom: solid 2px #1976d2;
+  border-bottom: solid 2px ${colors.primary};
   padding: 0 20px;
-  background-color: rgba(25, 118, 210, 0.3);
+  background-color: ${colors.secondaryBackgroundColor};
 `;
 
 const StyledModalBody = styled.div`

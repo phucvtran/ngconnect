@@ -114,7 +114,7 @@ const MyJobDetailView = () => {
               <Typography
                 sx={{
                   p: 2,
-                  color: colors.secondaryTextColor,
+                  color: colors.textColor,
                   textAlign: "center",
                   padding: 0,
                   margin: "24px 0 8px 0",

@@ -13,7 +13,7 @@ import { RootState } from "../../redux/store";
 const InboxView = () => {
   // get user info
   const currentUser = useSelector((state: RootState) => state.user.userInfo);
-  const currentUserId = currentUser.id;
+  const currentUserId = currentUser?.id;
 
   // const navigate = useNavigate();
   // const location = useLocation();
