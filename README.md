@@ -3,8 +3,7 @@
 A **React-based frontend** for a **marketplace platform**, where users can post **items, services, and jobs**, and connect via **real-time chat**. This app integrates with the **Express.js + TypeScript backend** and uses **Socket.io** for messaging. 
 
 ### Demo
-http://18.217.230.205:3000/login
-
+http://18.217.230.205:3000
 ## Test Accounts:
 | Username  | Password |
 |------------|-------------|
