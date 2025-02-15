@@ -19,6 +19,9 @@ import apiAgent from "../utils/apiAgent";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/userSlice";
 import { RootState } from "../redux/store";
+import { ModalContainer } from "./ModalContainer";
+import Login from "./Authentication/Login";
+import Register from "./Authentication/Register";
 
 const pages = ["Home", "Job"];
 const settings = ["My Account", "My Post", "Inbox", "Logout"];
@@ -30,6 +33,10 @@ function ResponsiveAppBar() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.refreshToken
   );
+
+  const [showLoginModal, setShowLoginModal] = React.useState<boolean>(false);
+  const [showRegisterModal, setShowRegisterModal] =
+    React.useState<boolean>(false);
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -77,7 +84,6 @@ function ResponsiveAppBar() {
             if (data) {
               dispatch(logout());
               handleCloseUserMenu();
-              navigate("/login");
             }
           } catch (error) {
             window.notify("error", "Failed to sign out. Try again later.");
@@ -193,7 +199,9 @@ function ResponsiveAppBar() {
           <Button
             variant="outlined"
             onClick={() =>
-              isAuthenticated ? navigate("/createListing") : navigate("/login")
+              isAuthenticated
+                ? navigate("/createListing")
+                : setShowLoginModal(true)
             }
             style={{
               borderRadius: 15,
@@ -240,7 +248,7 @@ function ResponsiveAppBar() {
           ) : (
             <Button
               variant="outlined"
-              onClick={() => navigate("/login")}
+              onClick={() => setShowLoginModal(true)}
               style={{
                 borderRadius: 15,
                 backgroundColor: "white",
@@ -250,6 +258,38 @@ function ResponsiveAppBar() {
               Sign in
             </Button>
           )}
+
+          {showLoginModal ? (
+            <ModalContainer
+              content={
+                <Login
+                  onSuccessLogin={setShowLoginModal}
+                  onRegisterClick={setShowRegisterModal}
+                />
+              }
+              onClose={() => {
+                setShowLoginModal(false);
+              }}
+              open={showLoginModal}
+              title="Sign Up / Log in"
+            />
+          ) : null}
+
+          {showRegisterModal ? (
+            <ModalContainer
+              content={
+                <Register
+                  onLoginClick={setShowLoginModal}
+                  onRegisterSuccessful={setShowRegisterModal}
+                />
+              }
+              onClose={() => {
+                setShowRegisterModal(false);
+              }}
+              open={showRegisterModal}
+              title="Sign Up / Log in"
+            />
+          ) : null}
         </Toolbar>
       </Container>
     </AppBar>

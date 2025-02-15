@@ -37,7 +37,7 @@ const JobDetailComponent = ({
 }: Props) => {
   // get user info
   const currentUser = useSelector((state: RootState) => state.user.userInfo);
-  const currentUserId = currentUser.id;
+  const currentUserId = currentUser?.id;
 
   const allowEdit = currentUserId && currentUserId === jobDetail?.user?.id;
 

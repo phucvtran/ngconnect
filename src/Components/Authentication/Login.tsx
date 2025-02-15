@@ -1,14 +1,19 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { colors } from "../../style/styleVariables";
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography, Link } from "@mui/material";
 import { useState } from "react";
 import { validateEmail } from "../../utils/helperMethods";
 import apiAgent from "../../utils/apiAgent";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/userSlice";
 
-export default function Login() {
+interface LoginProps {
+  onSuccessLogin: Function;
+  onRegisterClick: Function;
+}
+
+export default function Login({ onSuccessLogin, onRegisterClick }: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
@@ -39,7 +44,7 @@ export default function Login() {
             refreshToken: data.token.refreshToken,
           })
         );
-        navigate("/");
+        onSuccessLogin(false);
       } else window.notify("error", "Failed to log in. Try again later.");
     }
   };
@@ -83,9 +88,18 @@ export default function Login() {
           <Button variant="outlined" type="submit">
             Sign in
           </Button>
-          <small style={{ margin: "15px 0", maxWidth: "460px" }}>
-            Need an account? <Link to="/register">Register here</Link>
-          </small>
+          <Typography style={{ margin: "15px 0", maxWidth: "460px" }}>
+            Need an account?{" "}
+            <Link
+              component="button"
+              onClick={() => {
+                onSuccessLogin(false);
+                onRegisterClick(true);
+              }}
+            >
+              Register here
+            </Link>
+          </Typography>
         </form>
       </FormWrapper>
     </LoginContainer>
@@ -95,7 +109,7 @@ export default function Login() {
 const LoginContainer = styled.div`
   justify-content: center;
   display: flex;
-  height: 92vh;
+  /* height: 92vh; */
   align-items: center;
 `;
 const FormWrapper = styled.div`

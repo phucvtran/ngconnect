@@ -1,7 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { colors } from "../../style/styleVariables";
-import { Button, Stack, TextField, Typography } from "@mui/material";
+import { Button, Stack, TextField, Typography, Link } from "@mui/material";
 import { useState } from "react";
 import { UpdateCreateUserDto } from "../../models/User";
 import { validateEmail } from "../../utils/helperMethods";
@@ -18,7 +18,15 @@ const emptyUser: UpdateCreateUserDto = {
   phone: "",
 };
 
-export default function Register() {
+interface SignUpProps {
+  onLoginClick: Function;
+  onRegisterSuccessful: Function;
+}
+
+export default function Register({
+  onLoginClick,
+  onRegisterSuccessful,
+}: SignUpProps) {
   const [createObj, setCreateObj] = useState<UpdateCreateUserDto>(emptyUser);
   const [confirmPassword, setConfirmPassword] = useState<string>();
   const [warning, setWarning] = useState<string>("");
@@ -48,7 +56,8 @@ export default function Register() {
     if (email && password && firstName && lastName) {
       const response = await apiAgent.Users.createUser(createObj);
       window.notify("success", response?.message);
-      navigate("/login");
+      onLoginClick(true);
+      onRegisterSuccessful(false);
     }
   };
 
@@ -205,9 +214,18 @@ export default function Register() {
           <Button variant="outlined" type="submit">
             Sign up
           </Button>
-          <small style={{ margin: "15px 0" }}>
-            Already has an account? <Link to="/login">Login here</Link>
-          </small>
+          <Typography style={{ margin: "15px 0" }}>
+            Already has an account?{" "}
+            <Link
+              component="button"
+              onClick={() => {
+                onLoginClick(true);
+                onRegisterSuccessful(false);
+              }}
+            >
+              Login here
+            </Link>
+          </Typography>
         </form>
       </FormWrapper>
     </Container>
@@ -217,7 +235,7 @@ export default function Register() {
 const Container = styled.div`
   justify-content: center;
   display: flex;
-  height: 92vh;
+  /* height: 92vh; */
   align-items: center;
 `;
 const FormWrapper = styled.div`
