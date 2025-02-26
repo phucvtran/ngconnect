@@ -295,6 +295,7 @@ const JobDetailComponent = ({
                 setShowEditJobModal(false);
                 onSuccessAfterEditingListing && onSuccessAfterEditingListing();
               }}
+              isUpdate={true}
             />
           }
           onClose={() => setShowEditJobModal(false)}

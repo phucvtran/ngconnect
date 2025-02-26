@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import logo from "../Assets/Images/YVH_Draft_AllWhite_Logo.png";
 import apiAgent from "../utils/apiAgent";
@@ -33,7 +33,7 @@ function ResponsiveAppBar() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.refreshToken
   );
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showLoginModal, setShowLoginModal] = React.useState<boolean>(false);
   const [showRegisterModal, setShowRegisterModal] =
     React.useState<boolean>(false);
@@ -59,7 +59,9 @@ function ResponsiveAppBar() {
         navigate("/");
         break;
       case "Job":
-        navigate("/jobs");
+        const newParams = new URLSearchParams(searchParams);
+        newParams.set("categoryId", "1");
+        setSearchParams(newParams);
         break;
     }
   };
@@ -196,21 +198,6 @@ function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
-          <Button
-            variant="outlined"
-            onClick={() =>
-              isAuthenticated
-                ? navigate("/createListing")
-                : setShowLoginModal(true)
-            }
-            style={{
-              borderRadius: 15,
-              backgroundColor: "white",
-              fontWeight: "bold",
-            }}
-          >
-            Looking for Work
-          </Button>
 
           {isAuthenticated ? (
             <Box sx={{ flexGrow: 0 }}>
@@ -259,6 +246,7 @@ function ResponsiveAppBar() {
             </Button>
           )}
 
+          {/* login/register modal */}
           {showLoginModal ? (
             <ModalContainer
               content={

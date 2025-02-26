@@ -1,6 +1,9 @@
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
-import { UpdateCreateJobListingDto } from "../models/Listing";
+import {
+  UpdateCreateJobListingDto,
+  UpdateCreateListingDto,
+} from "../models/Listing";
 import { colors } from "../style/styleVariables";
 import apiAgent from "../utils/apiAgent";
 import UpdateCreateJobForm from "./UpdateCreateJobForm";
@@ -20,17 +23,23 @@ const emptyJob: UpdateCreateJobListingDto = {
 
 export default function CreateListing() {
   const navigate = useNavigate();
-  const apiCallback = async (request: UpdateCreateJobListingDto) => {
-    return await apiAgent.Listings.createJob(request);
+  const apiCallback = async (
+    request: UpdateCreateJobListingDto | UpdateCreateListingDto
+  ) => {
+    return request.categoryId === 1
+      ? await apiAgent.Listings.createJob(request as UpdateCreateJobListingDto)
+      : await apiAgent.Listings.createListing(
+          request as UpdateCreateListingDto
+        );
   };
   const onSuccess = (listingId: string) => {
-    listingId ? navigate(`/listings/jobs/${listingId}`) : navigate("/");
+    listingId ? navigate(`/listings/jobs/${listingId}`) : navigate("/myPost");
   };
   return (
     <Container>
       <FormWrapper>
         <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
-          Looking for a Job
+          Post A Listing:
         </Typography>
         <UpdateCreateJobForm
           initialObject={emptyJob}
