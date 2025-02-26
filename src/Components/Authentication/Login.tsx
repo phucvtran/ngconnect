@@ -11,9 +11,14 @@ import { login } from "../../redux/userSlice";
 interface LoginProps {
   onSuccessLogin: Function;
   onRegisterClick: Function;
+  navigateUrl?: string;
 }
 
-export default function Login({ onSuccessLogin, onRegisterClick }: LoginProps) {
+export default function Login({
+  onSuccessLogin,
+  onRegisterClick,
+  navigateUrl,
+}: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
@@ -45,6 +50,9 @@ export default function Login({ onSuccessLogin, onRegisterClick }: LoginProps) {
           })
         );
         onSuccessLogin(false);
+        if (navigateUrl) {
+          navigate(navigateUrl);
+        }
       } else window.notify("error", "Failed to log in. Try again later.");
     }
   };

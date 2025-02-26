@@ -31,7 +31,6 @@ function App() {
       {location.pathname === "/404" ? null : <Header />}
       <Routes>
         <Route path="/" element={<Home />}></Route>
-        <Route path="/:jobPathParam" element={<Home />}></Route>
         <Route path="/404" element={<NotFound />}></Route>
         {/* <Route path="*" element={<Navigate to="/404" replace />}></Route> */}
         <Route path="/listings/:listingId" element={<ListingDetailView />} />

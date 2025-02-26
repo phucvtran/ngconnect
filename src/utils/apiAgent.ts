@@ -1,7 +1,10 @@
 import Axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 import { SignInObject, UpdateCreateUserDto } from "../models/User";
-import { UpdateCreateJobListingDto } from "../models/Listing";
+import {
+  UpdateCreateJobListingDto,
+  UpdateCreateListingDto,
+} from "../models/Listing";
 import { ApiResponse, PaginationResponse } from "./commonTypes";
 import { CreateListingRequestDto } from "../models/ListingRequest";
 
@@ -186,6 +189,9 @@ const Users = {
 const Listings = {
   createJob: (body: UpdateCreateJobListingDto) =>
     requests.post<ApiResponse>(`/listing/job`, body, attachToken()),
+
+  createListing: (body: UpdateCreateListingDto) =>
+    requests.post<ApiResponse>(`/listing`, body, attachToken()),
 
   getAllListings: (params?: string) =>
     requests.get<PaginationResponse>(`/listing?${params ? params : ""}`),
