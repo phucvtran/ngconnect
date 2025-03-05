@@ -10,6 +10,8 @@ import JobDetailComponent from "./JobDetailComponent";
 import ConversationListComponent from "./ConversationListComponent";
 import { colors } from "../../style/styleVariables";
 import { Typography } from "@mui/material";
+import listingImage from "../../Assets/Images/house1.jpeg";
+import jobImage from "../../Assets/Images/job_image.avif";
 
 const MyJobDetailView = () => {
   // const navigate = useNavigate();
@@ -77,6 +79,21 @@ const MyJobDetailView = () => {
   };
   return (
     <Container>
+      <div
+        style={{
+          position: "relative",
+          width: "60%",
+          height: "60%",
+          maxHeight: "517px",
+        }}
+      >
+        <img
+          style={{ width: "100%", height: "100%", marginLeft: "33%" }}
+          src={jobDetail?.job ? jobImage : listingImage}
+          alt={"listing-image"}
+        />
+      </div>
+      <hr></hr>
       <Grid container spacing={10}>
         {listingId && jobDetail?.user?.id ? (
           <ConversationListComponent

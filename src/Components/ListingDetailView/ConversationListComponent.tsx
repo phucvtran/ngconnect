@@ -150,16 +150,24 @@ const ConversationListComponent = ({
                         onRequestItemClick(request);
                       }}
                     >
-                      <h2>
+                      <h3>
                         {getConversationListBy === "listingId"
-                          ? request.createdUserObj.firstName +
+                          ? "From: " +
+                            request.createdUserObj.firstName +
                             " " +
                             request.createdUserObj.lastName
-                          : request.listing.user.firstName +
+                          : "To: " +
+                            request.listing.user.firstName +
                             " " +
                             request.listing.user.lastName}
-                      </h2>
-                      <h3>Reservasation Dates:</h3>
+                      </h3>
+                      <span>
+                        <strong>Your Post: </strong>
+                        {request.listing.title}
+                      </span>
+                      <p>
+                        <b>Reservation Dates:</b>
+                      </p>
                       <ul>
                         {request.reservationDates.map((date: any) => (
                           <li key={date.id}>

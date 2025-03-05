@@ -6,6 +6,7 @@ import { useState } from "react";
 import { UpdateCreateUserDto } from "../../models/User";
 import { validateEmail } from "../../utils/helperMethods";
 import apiAgent from "../../utils/apiAgent";
+import { ERROR_MESSAGE, constants } from "../../utils/constants";
 
 const emptyUser: UpdateCreateUserDto = {
   firstName: "",
@@ -40,16 +41,16 @@ export default function Register({
     let warningMessage = "";
 
     // only validate email and password, other required fields are checked by MUI
-    if (!validateEmail(email)) warningMessage += `Invalid Email.`;
+    if (!validateEmail(email)) warningMessage += ERROR_MESSAGE.INVALID_EMAIL;
 
-    if (password.length < 8)
-      warningMessage += `Password must have at least 8 characters.`;
+    if (password.length < constants.PASSWORD_LENGTH)
+      warningMessage += ERROR_MESSAGE.PASSWORD_LENGTH_VALIDATION;
 
     if (password !== confirmPassword)
-      warningMessage += `Password and confirm password don't match.`;
+      warningMessage += ERROR_MESSAGE.PASSWORD_MATCHING;
 
     if (warningMessage.length) {
-      setWarning(warningMessage + `Please try again.`);
+      setWarning(warningMessage + ERROR_MESSAGE.PLEASE_TRY_AGAIN);
       return;
     }
 

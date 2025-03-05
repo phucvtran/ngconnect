@@ -33,7 +33,6 @@ function ResponsiveAppBar() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.refreshToken
   );
-  const [searchParams, setSearchParams] = useSearchParams();
   const [showLoginModal, setShowLoginModal] = React.useState<boolean>(false);
   const [showRegisterModal, setShowRegisterModal] =
     React.useState<boolean>(false);
@@ -59,9 +58,10 @@ function ResponsiveAppBar() {
         navigate("/");
         break;
       case "Job":
-        const newParams = new URLSearchParams(searchParams);
-        newParams.set("categoryId", "1");
-        setSearchParams(newParams);
+        navigate("/?categoryId=1");
+        // const newParams = new URLSearchParams(searchParams);
+        // newParams.set("categoryId", "1");
+        // setSearchParams(newParams);
         break;
     }
   };

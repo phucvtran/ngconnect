@@ -7,6 +7,7 @@ import { validateEmail } from "../../utils/helperMethods";
 import apiAgent from "../../utils/apiAgent";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/userSlice";
+import { ERROR_MESSAGE } from "../../utils/constants";
 
 interface LoginProps {
   onSuccessLogin: Function;
@@ -53,7 +54,7 @@ export default function Login({
         if (navigateUrl) {
           navigate(navigateUrl);
         }
-      } else window.notify("error", "Failed to log in. Try again later.");
+      } else window.notify("error", ERROR_MESSAGE.LOGIN);
     }
   };
 
