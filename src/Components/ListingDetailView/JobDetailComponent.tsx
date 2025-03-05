@@ -130,10 +130,15 @@ const JobDetailComponent = ({
     }
   };
 
-  if (jobDetail.job)
+  if (jobDetail)
     return (
       <Grid
-        size={{ xs: 12, sm: 12, md: 6, lg: 6 }}
+        size={{
+          xs: 12,
+          sm: 12,
+          md: 6,
+          lg: 6,
+        }}
         sx={isLargeScreen ? {} : { margin: "0 10px" }}
       >
         <SectionWrapper title="">
@@ -155,12 +160,16 @@ const JobDetailComponent = ({
                 </IconButton>
               )}
             </Box>
-            <h2>
-              $
-              {jobDetail.job.minRate +
-                (jobDetail.job.maxRate ? ` - $${jobDetail.job.maxRate}` : "")}
-              /hour
-            </h2>
+            {jobDetail.job ? (
+              <h2>
+                $
+                {jobDetail.job.minRate +
+                  (jobDetail.job.maxRate ? ` - $${jobDetail.job.maxRate}` : "")}
+                /hour
+              </h2>
+            ) : (
+              <h2>$ {jobDetail.price}</h2>
+            )}
             <p>
               Posted about {formatTimeAgo(new Date(jobDetail.createdDate))} in{" "}
               {jobDetail.city}, {jobDetail.state} {jobDetail.zipcode}
@@ -168,7 +177,7 @@ const JobDetailComponent = ({
           </div>
         </SectionWrapper>
 
-        <SectionWrapper title="User Info">
+        <SectionWrapper title="Posted By:">
           <Box
             sx={{
               display: "flex",
@@ -191,7 +200,13 @@ const JobDetailComponent = ({
               <strong>
                 {jobDetail?.user?.firstName + " " + jobDetail?.user?.lastName}
               </strong>
-              <p>Available From: {makeLocaleDate(jobDetail.job.startDate)}</p>
+              {jobDetail.job ? (
+                <p>Available From: {makeLocaleDate(jobDetail.job.startDate)}</p>
+              ) : (
+                <p>
+                  {jobDetail.city}, {jobDetail.state}
+                </p>
+              )}
             </div>
           </Box>
         </SectionWrapper>

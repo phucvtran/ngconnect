@@ -42,7 +42,7 @@ function App() {
           <Route path="/myPost" element={<Dashboard />} />
           <Route path="/inbox" element={<InboxView />} />
           <Route path="/myPost/jobs/:listingId" element={<MyJobDetailView />} />
-          <Route path="/myPost/:listingId" element={<ListingDetailView />} />
+          <Route path="/myPost/:listingId" element={<MyJobDetailView />} />
         </Route>
       </Routes>
     </>

@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import logo from "../Assets/Images/YVH_Draft_AllWhite_Logo.png";
 import apiAgent from "../utils/apiAgent";
@@ -33,7 +33,6 @@ function ResponsiveAppBar() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.refreshToken
   );
-  const [searchParams, setSearchParams] = useSearchParams();
   const [showLoginModal, setShowLoginModal] = React.useState<boolean>(false);
   const [showRegisterModal, setShowRegisterModal] =
     React.useState<boolean>(false);
@@ -59,9 +58,10 @@ function ResponsiveAppBar() {
         navigate("/");
         break;
       case "Job":
-        const newParams = new URLSearchParams(searchParams);
-        newParams.set("categoryId", "1");
-        setSearchParams(newParams);
+        navigate("/?categoryId=1");
+        // const newParams = new URLSearchParams(searchParams);
+        // newParams.set("categoryId", "1");
+        // setSearchParams(newParams);
         break;
     }
   };

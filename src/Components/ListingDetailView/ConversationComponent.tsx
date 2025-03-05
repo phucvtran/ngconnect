@@ -115,7 +115,8 @@ export const ConversationComponent = ({
 
     // Listen for incoming messages
     socket.on("receiveMessage", (data) => {
-      setMessages((prev) => [...prev, data]);
+      if (listingRequestId === data) setMessages((prev) => [...prev, data]);
+      console.log("unread message", data);
     });
 
     socket.on("connect", () => {

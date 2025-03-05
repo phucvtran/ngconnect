@@ -7,36 +7,37 @@ import SectionWrapper from "../SectionWrapper";
 import { useEffect, useState } from "react";
 import { ListingDetails } from "../../models/Listing";
 import { formatTimeAgo, makeLocaleString } from "../../utils/helperMethods";
+import apiAgent from "../../utils/apiAgent";
+import JobDetailComponent from "./JobDetailComponent";
 
-const fakeData = {
-  id: "1",
-  title: "Fixing Iphone 12's screen",
-  categoryId: 0,
-  price: 95.0,
-  description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi`,
-  createdDate: new Date("2024-01-15 02:11:59"),
-  status: "ACTIVE",
-  city: "Seattle",
-  state: "WA",
-  zipcode: "98178",
-};
 const ListingDetailView = () => {
   const { listingId } = useParams<{ listingId: string }>();
-  const [listingDetails] = useState<ListingDetails>(fakeData);
+  const [listingDetail, setListingDetail] = useState<ListingDetails>();
 
   useEffect(() => {
-    console.log(listingId);
-    //TODO: call api to get listing details
+    if (listingId) {
+      getlistingById(listingId);
+    }
   }, []);
 
-  return (
+  const getlistingById = async (id: string) => {
+    (async () => {
+      try {
+        const response = await apiAgent.Listings.getListingById(id);
+        if (response) {
+          setListingDetail(response);
+        }
+      } catch (error) {
+        window.alert("error");
+      }
+    })();
+  };
+
+  return listingDetail ? (
     <Container>
-      <h2>{listingDetails.title}</h2>
+      <h2>{listingDetail.title}</h2>
       <Grid container spacing={10}>
-        <Grid size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
           <Box style={{ width: "100%", height: "100%", maxHeight: "517px" }}>
             <img
               style={{ width: "100%", height: "100%" }}
@@ -44,27 +45,12 @@ const ListingDetailView = () => {
               alt={"listing-image"}
             />
           </Box>
-          <SectionWrapper title="Description">
-            <div>{listingDetails.description}</div>
-          </SectionWrapper>
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <SectionWrapper title="">
-            <div>
-              <h1>${makeLocaleString(listingDetails.price)}</h1>
-              <p>
-                Posted about{" "}
-                {formatTimeAgo(new Date(listingDetails.createdDate))} in{" "}
-                {listingDetails.city}, {listingDetails.state}{" "}
-                {listingDetails.zipcode}
-              </p>
-
-              <p>Category: {listingDetails.categoryId}</p>
-            </div>
-          </SectionWrapper>
-        </Grid>
+        <JobDetailComponent jobDetail={listingDetail} isLargeScreen={true} />
       </Grid>
     </Container>
+  ) : (
+    <h1>Listing not found</h1>
   );
 };
 export default ListingDetailView;
