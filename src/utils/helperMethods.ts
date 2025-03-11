@@ -20,6 +20,12 @@ export function makeLocaleString(
   });
 }
 
+export function currencyFormat(num: number | undefined) {
+  return num === undefined
+    ? 0
+    : "$" + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}
+
 export function formatTimeAgo(date: Date): string {
   const now = new Date();
   const seconds = Math.round((now.getTime() - date.getTime()) / 1000);

@@ -19,7 +19,7 @@ import dayjs, { Dayjs } from "dayjs";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import apiAgent from "../../utils/apiAgent";
-import UpdateCreateJobForm from "../UpdateCreateJobForm";
+import UpdateCreateListingForm from "../UpdateCreateListingForm";
 import { CreateListingRequestDto } from "../../models/ListingRequest";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -292,7 +292,7 @@ const JobDetailComponent = ({
 
         <ModalContainer
           content={
-            <UpdateCreateJobForm
+            <UpdateCreateListingForm
               initialObject={{
                 minRate: jobDetail.job?.minRate || 0,
                 startDate: jobDetail.job?.startDate

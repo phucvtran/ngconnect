@@ -6,7 +6,7 @@ import {
 } from "../models/Listing";
 import { colors } from "../style/styleVariables";
 import apiAgent from "../utils/apiAgent";
-import UpdateCreateJobForm from "./UpdateCreateJobForm";
+import UpdateCreateListingForm from "./UpdateCreateListingForm";
 import { useNavigate } from "react-router-dom";
 
 const emptyJob: UpdateCreateJobListingDto = {
@@ -32,21 +32,20 @@ export default function CreateListing() {
           request as UpdateCreateListingDto
         );
   };
-  const onSuccess = (listingId: string) => {
-    listingId ? navigate(`/listings/jobs/${listingId}`) : navigate("/myPost");
+
+  const onSuccess = (listingType: number, listingId: string) => {
+    listingId
+      ? navigate(`/listings${listingType === 1 ? "/jobs" : ""}/${listingId}`)
+      : navigate("/myPost");
   };
+
   return (
     <Container>
-      <FormWrapper>
-        <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
-          Post A Listing:
-        </Typography>
-        <UpdateCreateJobForm
-          initialObject={emptyJob}
-          apiCallback={apiCallback}
-          onSuccess={onSuccess}
-        />
-      </FormWrapper>
+      <UpdateCreateListingForm
+        initialObject={emptyJob}
+        apiCallback={apiCallback}
+        onSuccess={onSuccess}
+      />
     </Container>
   );
 }
@@ -54,21 +53,8 @@ export default function CreateListing() {
 const Container = styled.div`
   justify-content: center;
   display: flex;
-  height: 92vh;
+  /* height: 92vh; */
   align-items: center;
-  max-width: 90%;
-  margin: 0px 30px;
-`;
-const FormWrapper = styled.div`
-  border: 2px solid ${colors.primary};
-  border-radius: 25px;
-  display: block;
-  justify-content: center;
-  h4 {
-    margin: 20px 10px 0px 20px;
-  }
-  form {
-    display: grid;
-    padding: 20px;
-  }
+  max-width: 100%;
+  margin: 30px;
 `;
