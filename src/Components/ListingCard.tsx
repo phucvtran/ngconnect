@@ -7,7 +7,7 @@ import { formatTimeAgo } from "../utils/helperMethods";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { useState } from "react";
 import { ModalContainer } from "./ModalContainer";
-import UpdateCreateJobForm from "./UpdateCreateJobForm";
+import UpdateCreateListingForm from "./UpdateCreateListingForm";
 import apiAgent from "../utils/apiAgent";
 
 interface Props {
@@ -27,6 +27,7 @@ const ListingCard = ({
   const isJobListing = listing.categoryId === 1;
   const handleEdit = (e: any) => {
     e.stopPropagation();
+    console.log("edit");
     setShowEditJobModal(true);
   };
 
@@ -76,7 +77,7 @@ const ListingCard = ({
               {listing.state} {listing.zipcode}
             </Typography>
           </Box>
-          {allowEdit && isJobListing && (
+          {allowEdit && (
             <IconButton
               size="large"
               onClick={(e) => handleEdit(e)}
@@ -90,7 +91,7 @@ const ListingCard = ({
 
       <ModalContainer
         content={
-          <UpdateCreateJobForm
+          <UpdateCreateListingForm
             initialObject={{
               minRate: listing.job?.minRate || 0,
               startDate: listing.job?.startDate
@@ -111,7 +112,7 @@ const ListingCard = ({
           />
         }
         onClose={() => setShowEditJobModal(false)}
-        open={showEditJobModal && isJobListing}
+        open={showEditJobModal}
         title={"Update Job"}
       />
     </div>

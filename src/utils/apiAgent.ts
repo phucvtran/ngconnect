@@ -206,6 +206,21 @@ const Listings = {
 
   updateJob: (id: string, body: UpdateCreateJobListingDto) =>
     requests.put<ApiResponse>(`/listing/job/${id}`, body, attachToken()),
+
+  uploadListingImage: (listingId: string, body: FormData) => {
+    const accessToken = localStorage.getItem("accessToken");
+    const header = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "multipart/form-data",
+      },
+    } as InternalAxiosRequestConfig<any>;
+    requests.post<ApiResponse>(
+      `/listing/${listingId}/uploadImage`,
+      body,
+      header
+    );
+  },
 };
 
 const ListingRequests = {
