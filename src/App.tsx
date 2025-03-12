@@ -7,7 +7,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import ListingDetailView from "./Components/ListingDetailView/ListingDetailView";
 import GlobalAlert from "./Components/GlobalAlert";
 import PrivateRoutes from "./Components/Authentication/PrivateRoutes";
-import CreateListing from "./Components/CreateListing";
+import UpdateCreateListing from "./Components/UpdateCreateListingComponents/UpdateCreateListing";
 import JobDetailView from "./Components/ListingDetailView/JobDetailView";
 import Dashboard from "./Components/Dashboard";
 import MyJobDetailView from "./Components/ListingDetailView/MyJobDetailView";
@@ -38,7 +38,10 @@ function App() {
 
         {/*  Put protected routes here  */}
         <Route element={<PrivateRoutes />}>
-          <Route path="/createListing" element={<CreateListing />} />
+          <Route
+            path="/updateCreateListing"
+            element={<UpdateCreateListing />}
+          />
           <Route path="/myPost" element={<Dashboard />} />
           <Route path="/inbox" element={<InboxView />} />
           <Route path="/myPost/jobs/:listingId" element={<MyJobDetailView />} />

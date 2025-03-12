@@ -207,6 +207,9 @@ const Listings = {
   updateJob: (id: string, body: UpdateCreateJobListingDto) =>
     requests.put<ApiResponse>(`/listing/job/${id}`, body, attachToken()),
 
+  updateListing: (id: string, body: UpdateCreateListingDto) =>
+    requests.put<ApiResponse>(`/listing/${id}`, body, attachToken()),
+
   uploadListingImage: (listingId: string, body: FormData) => {
     const accessToken = localStorage.getItem("accessToken");
     const header = {

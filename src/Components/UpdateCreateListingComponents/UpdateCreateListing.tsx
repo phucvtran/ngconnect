@@ -1,13 +1,11 @@
 import styled from "@emotion/styled";
-import { Typography } from "@mui/material";
 import {
   UpdateCreateJobListingDto,
   UpdateCreateListingDto,
-} from "../models/Listing";
-import { colors } from "../style/styleVariables";
-import apiAgent from "../utils/apiAgent";
+} from "../../models/Listing";
+import apiAgent from "../../utils/apiAgent";
 import UpdateCreateListingForm from "./UpdateCreateListingForm";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const emptyJob: UpdateCreateJobListingDto = {
   minRate: 0,
@@ -21,8 +19,11 @@ const emptyJob: UpdateCreateJobListingDto = {
   zipcode: "",
 };
 
-export default function CreateListing() {
+export default function UpdateCreateListing() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const listing = location?.state?.listing;
+
   const apiCallback = async (
     request: UpdateCreateJobListingDto | UpdateCreateListingDto
   ) => {
@@ -35,16 +36,20 @@ export default function CreateListing() {
 
   const onSuccess = (listingType: number, listingId: string) => {
     listingId
-      ? navigate(`/listings${listingType === 1 ? "/jobs" : ""}/${listingId}`)
-      : navigate("/myPost");
+      ? navigate(`/listings${listingType === 1 ? "/jobs" : ""}/${listingId}`, {
+          replace: true,
+          state: null,
+        })
+      : navigate("/myPost", { replace: true, state: null });
   };
 
   return (
     <Container>
       <UpdateCreateListingForm
-        initialObject={emptyJob}
+        initialObject={listing || emptyJob}
         apiCallback={apiCallback}
         onSuccess={onSuccess}
+        isUpdate={listing}
       />
     </Container>
   );

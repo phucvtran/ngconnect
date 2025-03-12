@@ -16,14 +16,16 @@ import { useEffect, useState } from "react";
 import {
   UpdateCreateJobListingDto,
   UpdateCreateListingDto,
-} from "../models/Listing";
+} from "../../models/Listing";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { colors } from "../style/styleVariables";
+import { colors } from "../../style/styleVariables";
+
+import apiAgent from "../../utils/apiAgent";
 import UpdateCreateListingPreview from "./UpdateCreateListingPreview";
-import apiAgent from "../utils/apiAgent";
+import { useNavigate } from "react-router";
 
 interface Props {
   initialObject: UpdateCreateJobListingDto;
@@ -39,16 +41,37 @@ const UpdateCreateListingForm = ({
 }: Props) => {
   const isLargeScreen = useMediaQuery("(min-width:500px)");
 
+  // if update, create object for listing based on the value that passed in.
+  // create object from empty Object.
   const [updateCreateObject, setUpdateCreateObject] =
-    useState<UpdateCreateJobListingDto>(() => initialObject);
+    useState<UpdateCreateJobListingDto>(() =>
+      initialObject.job
+        ? { ...initialObject, ...initialObject.job }
+        : initialObject
+    );
   const [warning, setWarning] = useState<string>("");
-  const [listingType, setListingType] = useState<string>("1");
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
-  useEffect(() => {
-    setUpdateCreateObject(initialObject);
-  }, [initialObject]);
+  //Listing type will based on categoryID 0 for 'for sale' and 1 for 'job'
+  const [listingType, setListingType] = useState<string>(
+    initialObject.categoryId + ""
+  );
+
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+
+  // if update, initialObject should contain listing object
+  const listingId = initialObject?.id;
+  const jobListingId = initialObject?.job?.id;
+
+  const imageUrl = initialObject.listingImages
+    ? initialObject.listingImages.map((url: any) => url.url)
+    : [];
+
+  const [imagePreviews, setImagePreviews] = useState<string[]>(imageUrl);
+
+  // useEffect(() => {
+  //   console.log(updateCreateObject);
+  //   // setUpdateCreateObject(initialObject);
+  // }, [initialObject]);
 
   const createJob = async (event: any) => {
     event.preventDefault();
@@ -65,7 +88,6 @@ const UpdateCreateListingForm = ({
       setWarning(message);
       return;
     }
-    // const response = await apiAgent.Listings.createJob(updateCreateObject);
     const response = await apiCallback(updateCreateObject, imageFiles);
 
     const listingId = (response as any)?.listing?.id;
@@ -76,6 +98,48 @@ const UpdateCreateListingForm = ({
 
     window.notify("success", response?.message);
     onSuccess && onSuccess(1, listingId);
+  };
+
+  const updateJob = async (event: any) => {
+    event.preventDefault();
+    if (jobListingId) {
+      try {
+        const response: any = await apiAgent.Listings.updateJob(
+          jobListingId,
+          updateCreateObject
+        );
+
+        if (imageFiles.length > 0 && listingId) {
+          await uploadImage(listingId);
+        }
+
+        window.notify("success", response?.message);
+        onSuccess && onSuccess(1, listingId);
+      } catch (error) {
+        window.notify("error", "failed to update Job Listing");
+      }
+    }
+  };
+
+  const updateListing = async (event: any) => {
+    event.preventDefault();
+    if (listingId) {
+      try {
+        const response: any = await apiAgent.Listings.updateListing(
+          listingId,
+          updateCreateObject
+        );
+
+        if (imageFiles.length > 0 && listingId) {
+          await uploadImage(listingId);
+        }
+
+        window.notify("success", response?.message);
+        onSuccess && onSuccess(0, listingId);
+      } catch (error) {
+        window.notify("error", "failed to update Listing");
+      }
+    }
   };
 
   const createListing = async (event: any) => {
@@ -154,7 +218,6 @@ const UpdateCreateListingForm = ({
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.target;
-
     setUpdateCreateObject((prev) => ({
       ...prev,
       [name]: value,
@@ -205,11 +268,6 @@ const UpdateCreateListingForm = ({
           files.map(async (file) => {
             if (file.size <= 5 * 1024 * 1024) return file; // Skip if already under 5MB
             const compressedFile = await imageCompression(file, options);
-            console.log(
-              `Compressed ${file.name}: ${file.size / 1024 / 1024}MB -> ${
-                compressedFile.size / 1024 / 1024
-              }MB`
-            );
             if (compressedFile.size > 5 * 1024 * 1024) {
               setWarning(
                 `File ${file.name} still too large after compression: ${
@@ -224,7 +282,8 @@ const UpdateCreateListingForm = ({
         const previewURLs = compressedFiles.map((file) =>
           URL.createObjectURL(file)
         );
-        setImagePreviews(previewURLs);
+        const newPreviewURLs = [...imagePreviews, ...previewURLs];
+        setImagePreviews(newPreviewURLs);
       } catch (error) {
         console.error("Compression error:", error);
         window.notify("error", "compression error");
@@ -240,17 +299,37 @@ const UpdateCreateListingForm = ({
     URL.revokeObjectURL(imagePreviews[index]); // discard image in the memory.
   };
 
+  const handleOnSubmit = (event: any) => {
+    event.preventDefault();
+    if (isUpdate && (listingId || jobListingId)) {
+      if (listingType === "1") {
+        updateJob(event);
+      } else {
+        updateListing(event);
+      }
+    } else {
+      if (listingType === "1") {
+        createJob(event);
+      } else {
+        createListing(event);
+      }
+    }
+  };
+
   return (
     <CreateListingContainer isLargeScreen={isLargeScreen}>
       <FormWrapper isLargeScreen={isLargeScreen}>
         <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
-          Post A Listing:
+          {isUpdate ? "Update" : "Post"} A Listing:
         </Typography>
-        <form
-          className="CreateJobForm"
-          onSubmit={listingType === "1" ? createJob : createListing}
-        >
-          {isUpdate ? null : (
+        <form className="CreateJobForm" onSubmit={handleOnSubmit}>
+          {isUpdate ? (
+            listingType === "1" ? (
+              <p>Service/Job Listing</p>
+            ) : (
+              <p>For Sale</p>
+            )
+          ) : (
             <FormControl sx={{ marginBottom: "20px" }}>
               <RadioGroup
                 row
@@ -335,7 +414,7 @@ const UpdateCreateListingForm = ({
             )}
           </div>
 
-          {/* dev image upload UI  */}
+          {/* image upload UI  */}
 
           <TextField
             label={listingType === "1" ? "Job Title" : "Listing Title"}

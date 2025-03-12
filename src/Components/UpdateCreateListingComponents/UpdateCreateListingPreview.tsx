@@ -1,16 +1,14 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
-import { colors } from "../style/styleVariables";
+import { colors } from "../../style/styleVariables";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {
-  UpdateCreateJobListingDto,
-  UpdateCreateListingDto,
-} from "../models/Listing";
+import { UpdateCreateJobListingDto } from "../../models/Listing";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState } from "../../redux/store";
 
-import avatar_image from "../Assets/Images/img_avatar.png";
-import { currencyFormat } from "../utils/helperMethods";
+import avatar_image from "../../Assets/Images/img_avatar.png";
+
+import ImageSlider from "../ListingDetailView/ImageSlider";
+import { currencyFormat } from "../../utils/helperMethods";
 
 interface props {
   images: string[];
@@ -21,23 +19,6 @@ const UpdateCreateListingPreview = ({ images, listing }: props) => {
   const isLargeScreen = useMediaQuery("(min-width:500px)");
 
   const currentUser = useSelector((state: RootState) => state.user.userInfo);
-  const [imageIndex, setImageIndex] = useState<number>(0);
-
-  const handlePreviousButton = () => {
-    if (imageIndex === 0) {
-      setImageIndex(images.length - 1);
-    } else {
-      setImageIndex(imageIndex - 1);
-    }
-  };
-
-  const handleNextButton = () => {
-    if (imageIndex === images.length - 1) {
-      setImageIndex(0);
-    } else {
-      setImageIndex(imageIndex + 1);
-    }
-  };
 
   return (
     <PreviewContainer isLargeScreen={isLargeScreen}>
@@ -45,32 +26,11 @@ const UpdateCreateListingPreview = ({ images, listing }: props) => {
       <Preview isLargeScreen={isLargeScreen}>
         {images.length > 0 ? (
           <ImageSliderContainer isLargeScreen={isLargeScreen}>
-            <ImageContainer>
-              <a className="button-previous" onClick={handlePreviousButton}>
-                ❮
-              </a>
-              <img style={{ width: "100%" }} src={images[imageIndex]}></img>
-              <a className="button-next" onClick={handleNextButton}>
-                ❯
-              </a>
-            </ImageContainer>
-            <DotPaginationContainer>
-              {images.map((_, i) => {
-                return (
-                  <span
-                    key={i}
-                    className={i === imageIndex ? "dot active" : "dot"}
-                    onClick={() => setImageIndex(i)}
-                  ></span>
-                );
-              })}
-            </DotPaginationContainer>
+            <ImageSlider images={images}></ImageSlider>
           </ImageSliderContainer>
         ) : (
           <ImageSliderContainer isLargeScreen={isLargeScreen}>
-            <h4 style={{ textAlign: "center", opacity: 0.6 }}>
-              Your Images Preview
-            </h4>
+            <ImageSlider images={images}></ImageSlider>
           </ImageSliderContainer>
         )}
         <ListingInfoContainer isLargeScreen={isLargeScreen}>
@@ -157,73 +117,3 @@ const ListingInfoContainer = styled.div<{ isLargeScreen: boolean }>`
   }
 `;
 // end template style
-const ImageContainer = styled.div`
-  width: 90%;
-  margin: auto;
-  position: relative;
-
-  .button-previous,
-  .button-next {
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    width: auto;
-    padding: 16px;
-    margin-top: -22px;
-    color: ${colors.primary};
-    font-weight: bold;
-    font-size: 18px;
-    transition: 0.6s ease;
-    border-radius: 0 3px 3px 0;
-    user-select: none;
-  }
-
-  /* Position the "next button" to the right */
-  .button-next {
-    right: 0;
-    border-radius: 3px 0 0 3px;
-  }
-
-  /* On hover, add a black background color with a little bit see-through */
-  .button-previous:hover,
-  .button-next:hover {
-    background-color: rgba(0, 0, 0, 0.8);
-  }
-
-  /* Fading animation */
-  .fade {
-    animation-name: fade;
-    animation-duration: 1.5s;
-  }
-
-  @keyframes fade {
-    from {
-      opacity: 0.4;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-`;
-
-const DotPaginationContainer = styled.div`
-  margin-top: 10px;
-  text-align: center;
-
-  /* The dots/bullets/indicators */
-  .dot {
-    cursor: pointer;
-    height: 15px;
-    width: 15px;
-    margin: 0 2px;
-    background-color: ${colors.lightBlue};
-    border-radius: 50%;
-    display: inline-block;
-    transition: background-color 0.6s ease;
-  }
-
-  .active,
-  .dot:hover {
-    background-color: ${colors.primary};
-  }
-`;
