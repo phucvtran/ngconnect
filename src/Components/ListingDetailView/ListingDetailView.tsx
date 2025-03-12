@@ -1,6 +1,6 @@
 import Grid from "@mui/material/Grid2";
 import { useParams } from "react-router-dom";
-import image1 from "../../Assets/Images/house1.jpeg";
+import no_image_photo from "../../Assets/Images/no_image_available.jpg";
 import { Box } from "@mui/material";
 import styled from "@emotion/styled";
 import SectionWrapper from "../SectionWrapper";
@@ -9,6 +9,7 @@ import { ListingDetails } from "../../models/Listing";
 import { formatTimeAgo, makeLocaleString } from "../../utils/helperMethods";
 import apiAgent from "../../utils/apiAgent";
 import JobDetailComponent from "./JobDetailComponent";
+import ImageSlider from "./ImageSlider";
 
 const ListingDetailView = () => {
   const { listingId } = useParams<{ listingId: string }>();
@@ -37,13 +38,25 @@ const ListingDetailView = () => {
     <Container>
       <h2>{listingDetail.title}</h2>
       <Grid container spacing={10}>
-        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
+        <Grid
+          alignItems={"center"}
+          justifyContent={"center"}
+          size={{ xs: 12, sm: 12, md: 6, lg: 6 }}
+        >
           <Box style={{ width: "100%", height: "100%", maxHeight: "517px" }}>
-            <img
-              style={{ width: "100%", height: "100%" }}
-              src={image1}
-              alt={"listing-image"}
-            />
+            {listingDetail.listingImages.length > 0 ? (
+              <ImageSlider
+                images={listingDetail.listingImages.map(
+                  (image: any) => image.url
+                )}
+              ></ImageSlider>
+            ) : (
+              <img
+                style={{ width: "100%", height: "100%" }}
+                src={no_image_photo}
+                alt={"listing-image"}
+              />
+            )}
           </Box>
         </Grid>
         <JobDetailComponent jobDetail={listingDetail} isLargeScreen={true} />

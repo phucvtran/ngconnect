@@ -28,7 +28,15 @@ const ImageSlider = ({ images }: prop) => {
         <a className="button-previous" onClick={handlePreviousButton}>
           ❮
         </a>
-        <img style={{ width: "100%" }} src={images[imageIndex]}></img>
+        <img
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain", // Ensures image fits without distortion
+            borderRadius: "10px", // Optional: Adds rounded corners
+          }}
+          src={images[imageIndex]}
+        ></img>
         <a className="button-next" onClick={handleNextButton}>
           ❯
         </a>
@@ -54,8 +62,20 @@ export default ImageSlider;
 
 const ImageContainer = styled.div`
   width: 90%;
+  //max-width: 500px; /* Prevents images from getting too large */
+  //height: 300px; /* Adjust for a fixed aspect ratio */
   margin: auto;
   position: relative;
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+  overflow: hidden; /* Prevents any overflow */
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Keeps full image visible */
+  }
 
   .button-previous,
   .button-next {

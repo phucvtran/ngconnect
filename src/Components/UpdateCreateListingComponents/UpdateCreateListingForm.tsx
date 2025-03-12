@@ -25,7 +25,6 @@ import { colors } from "../../style/styleVariables";
 
 import apiAgent from "../../utils/apiAgent";
 import UpdateCreateListingPreview from "./UpdateCreateListingPreview";
-import { useNavigate } from "react-router";
 
 interface Props {
   initialObject: UpdateCreateJobListingDto;

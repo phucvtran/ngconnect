@@ -15,6 +15,7 @@ export interface ListingDetails {
   zipcode?: string;
   job?: JobDetails;
   user?: User;
+  listingImages?: any;
 }
 
 export interface JobDetails {
