@@ -1,14 +1,14 @@
 import { Box, IconButton, Typography } from "@mui/material";
-import listingImage from "../Assets/Images/listing.jpg";
-import jobImage from "../Assets/Images/job_image.avif";
+import listingImage from "../../Assets/Images/listing.jpg";
+import jobImage from "../../Assets/Images/job_image.avif";
 import { useNavigate } from "react-router-dom";
-import { ListingDetails, UpdateCreateJobListingDto } from "../models/Listing";
-import { formatTimeAgo } from "../utils/helperMethods";
+import {
+  ListingDetails,
+  UpdateCreateJobListingDto,
+} from "../../models/Listing";
+import { formatTimeAgo } from "../../utils/helperMethods";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import { useState } from "react";
-import { ModalContainer } from "./ModalContainer";
-import UpdateCreateListingForm from "./UpdateCreateListingForm";
-import apiAgent from "../utils/apiAgent";
+import apiAgent from "../../utils/apiAgent";
 
 interface Props {
   listing: ListingDetails;
@@ -22,13 +22,11 @@ const ListingCard = ({
   onSuccessAfterEditingListing,
 }: Props) => {
   const navigate = useNavigate();
-  const [showEditJobModal, setShowEditJobModal] = useState<boolean>(false);
 
   const isJobListing = listing.categoryId === 1;
   const handleEdit = (e: any) => {
     e.stopPropagation();
-    console.log("edit");
-    setShowEditJobModal(true);
+    navigate("/updateCreateListing", { state: { listing: listing } });
   };
 
   const updateJobListing = async (body: UpdateCreateJobListingDto) => {
@@ -88,33 +86,6 @@ const ListingCard = ({
           )}
         </Box>
       </Box>
-
-      <ModalContainer
-        content={
-          <UpdateCreateListingForm
-            initialObject={{
-              minRate: listing.job?.minRate || 0,
-              startDate: listing.job?.startDate
-                ? new Date(listing.job!.startDate)
-                : new Date(),
-              title: listing.title,
-              description: listing.description,
-              categoryId: 1,
-              city: listing.city || "",
-              state: listing.state || "",
-              zipcode: listing.zipcode || "",
-            }}
-            apiCallback={updateJobListing}
-            onSuccess={() => {
-              setShowEditJobModal(false);
-              onSuccessAfterEditingListing && onSuccessAfterEditingListing();
-            }}
-          />
-        }
-        onClose={() => setShowEditJobModal(false)}
-        open={showEditJobModal}
-        title={"Update Job"}
-      />
     </div>
   );
 };

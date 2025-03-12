@@ -19,10 +19,10 @@ import dayjs, { Dayjs } from "dayjs";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import apiAgent from "../../utils/apiAgent";
-import UpdateCreateListingForm from "../UpdateCreateListingForm";
 import { CreateListingRequestDto } from "../../models/ListingRequest";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router";
 
 interface Props {
   jobDetail: ListingDetails;
@@ -39,9 +39,9 @@ const JobDetailComponent = ({
   const currentUser = useSelector((state: RootState) => state.user.userInfo);
   const currentUserId = currentUser?.id;
 
-  const allowEdit = currentUserId && currentUserId === jobDetail?.user?.id;
+  const navigate = useNavigate();
 
-  const [showEditJobModal, setShowEditJobModal] = useState<boolean>(false);
+  const allowEdit = currentUserId && currentUserId === jobDetail?.user?.id;
 
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -153,7 +153,11 @@ const JobDetailComponent = ({
               {allowEdit && (
                 <IconButton
                   size="large"
-                  onClick={() => setShowEditJobModal(true)}
+                  onClick={() =>
+                    navigate("/updateCreateListing", {
+                      state: { listing: jobDetail },
+                    })
+                  }
                   color="inherit"
                 >
                   <ModeEditIcon />
@@ -288,34 +292,6 @@ const JobDetailComponent = ({
               </ActionButtonContainer>
             </div>
           }
-        />
-
-        <ModalContainer
-          content={
-            <UpdateCreateListingForm
-              initialObject={{
-                minRate: jobDetail.job?.minRate || 0,
-                startDate: jobDetail.job?.startDate
-                  ? new Date(jobDetail.job!.startDate)
-                  : new Date(),
-                title: jobDetail.title,
-                description: jobDetail.description,
-                categoryId: 1,
-                city: jobDetail.city || "",
-                state: jobDetail.state || "",
-                zipcode: jobDetail.zipcode || "",
-              }}
-              apiCallback={updateJobListing}
-              onSuccess={() => {
-                setShowEditJobModal(false);
-                onSuccessAfterEditingListing && onSuccessAfterEditingListing();
-              }}
-              isUpdate={true}
-            />
-          }
-          onClose={() => setShowEditJobModal(false)}
-          open={showEditJobModal}
-          title={"Update Job"}
         />
       </Grid>
     );

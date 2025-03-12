@@ -4,16 +4,16 @@ import Pagination from "@mui/material/Pagination";
 import React, { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ListingCard from "./ListingCard";
-import { PaginationResponse } from "../utils/commonTypes";
+import { PaginationResponse } from "../../utils/commonTypes";
 import styled from "@emotion/styled";
 import SearchIcon from "@mui/icons-material/Search";
-import { colors } from "../style/styleVariables";
-import { defaultQueryParams } from "../utils/defaultValues";
+import { colors } from "../../style/styleVariables";
+import { defaultQueryParams } from "../../utils/defaultValues";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { ModalContainer } from "./ModalContainer";
-import Login from "./Authentication/Login";
-import Register from "./Authentication/Register";
+import { RootState } from "../../redux/store";
+import { ModalContainer } from "../ModalContainer";
+import Login from "../Authentication/Login";
+import Register from "../Authentication/Register";
 
 interface Props {
   getListingsCallback: Function;
@@ -97,7 +97,7 @@ const ListingList = ({ getListingsCallback, allowEdit = false }: Props) => {
     if (!isAuthenticate) {
       setShowLoginModal(true);
     } else {
-      navigate("/createListing");
+      navigate("/updateCreateListing");
     }
   };
 
@@ -215,7 +215,7 @@ const ListingList = ({ getListingsCallback, allowEdit = false }: Props) => {
             <Login
               onSuccessLogin={setShowLoginModal}
               onRegisterClick={setShowRegisterModal}
-              navigateUrl="/createListing"
+              navigateUrl="/updateCreateListing"
             />
           }
           onClose={() => {

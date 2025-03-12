@@ -1,5 +1,5 @@
 import apiAgent from "../utils/apiAgent";
-import ListingList from "./ListingList";
+import ListingList from "./ListingDetailView/ListingList";
 
 const Dashboard = () => {
   const getListingsCallback = async (searchQueryParams: any) => {

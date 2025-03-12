@@ -27,6 +27,7 @@ export interface JobDetails {
 }
 
 export interface UpdateCreateListingDto {
+  id?: string;
   title: string;
   description: string;
   price?: number;
@@ -34,6 +35,8 @@ export interface UpdateCreateListingDto {
   city: string;
   state: string;
   zipcode: string;
+  listingImages?: [];
+  job?: any;
 }
 export interface UpdateCreateJobListingDto extends UpdateCreateListingDto {
   minRate: number;
