@@ -179,19 +179,21 @@ const JobDetailComponent = ({ jobDetail, isLargeScreen }: Props) => {
           </div>
         </SectionWrapper>
 
-        <SectionWrapper title="Listing Images">
-          {jobDetail.listingImages.length > 0 ? (
-            <ImageSlider
-              images={jobDetail.listingImages.map((image: any) => image.url)}
-            ></ImageSlider>
-          ) : (
-            <img
-              style={{ width: "100%", height: "100%" }}
-              src={no_image_photo}
-              alt={"listing-image"}
-            />
-          )}
-        </SectionWrapper>
+        {jobDetail.categoryId === 1 && (
+          <SectionWrapper title="Listing Images">
+            {jobDetail.listingImages.length > 0 ? (
+              <ImageSlider
+                images={jobDetail.listingImages.map((image: any) => image.url)}
+              ></ImageSlider>
+            ) : (
+              <img
+                style={{ width: "100%", height: "100%" }}
+                src={no_image_photo}
+                alt={"listing-image"}
+              />
+            )}
+          </SectionWrapper>
+        )}
 
         <SectionWrapper title="Description">
           <div>{jobDetail.description}</div>
