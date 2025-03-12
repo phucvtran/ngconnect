@@ -72,11 +72,6 @@ const MyJobDetailView = () => {
     })();
   };
 
-  const onSuccessAfterEditingListing = async () => {
-    if (listingId) {
-      await getJobById(listingId);
-    }
-  };
   return (
     <Container>
       <div
@@ -108,7 +103,6 @@ const MyJobDetailView = () => {
           <JobDetailComponent
             jobDetail={jobDetail}
             isLargeScreen={isLargeScreen}
-            onSuccessAfterEditingListing={onSuccessAfterEditingListing}
           />
         ) : null}
 

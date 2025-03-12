@@ -6,9 +6,14 @@ import {
   UpdateCreateJobListingDto,
 } from "../../models/Listing";
 import SectionWrapper from "../SectionWrapper";
-import { formatTimeAgo, makeLocaleDate } from "../../utils/helperMethods";
+import {
+  currencyFormat,
+  formatTimeAgo,
+  makeLocaleDate,
+} from "../../utils/helperMethods";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import avatar_image from "../../Assets/Images/img_avatar.png";
+import no_image_photo from "../../Assets/Images/no_image_available.jpg";
 import { ModalContainer } from "../ModalContainer";
 import { useState } from "react";
 import styled from "@emotion/styled";
@@ -23,18 +28,14 @@ import { CreateListingRequestDto } from "../../models/ListingRequest";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useNavigate } from "react-router";
+import ImageSlider from "./ImageSlider";
 
 interface Props {
   jobDetail: ListingDetails;
   isLargeScreen: boolean;
-  onSuccessAfterEditingListing?: Function;
 }
 
-const JobDetailComponent = ({
-  jobDetail,
-  isLargeScreen,
-  onSuccessAfterEditingListing,
-}: Props) => {
+const JobDetailComponent = ({ jobDetail, isLargeScreen }: Props) => {
   // get user info
   const currentUser = useSelector((state: RootState) => state.user.userInfo);
   const currentUserId = currentUser?.id;
@@ -52,10 +53,6 @@ const JobDetailComponent = ({
 
   const [isValidContactInput, setIsValidContactInput] =
     useState<boolean>(false);
-
-  const updateJobListing = async (body: UpdateCreateJobListingDto) => {
-    return await apiAgent.Listings.updateJob(jobDetail!.job!.id, body);
-  };
 
   const handleNewReservationDateTime = () => {
     let tempArray = [...reservationDateTimeArray];
@@ -166,9 +163,10 @@ const JobDetailComponent = ({
             </Box>
             {jobDetail.job ? (
               <h2>
-                $
-                {jobDetail.job.minRate +
-                  (jobDetail.job.maxRate ? ` - $${jobDetail.job.maxRate}` : "")}
+                {currencyFormat(jobDetail.job.minRate) +
+                  (jobDetail.job.maxRate
+                    ? ` - ${currencyFormat(jobDetail.job.maxRate)}`
+                    : "")}
                 /hour
               </h2>
             ) : (
@@ -179,6 +177,24 @@ const JobDetailComponent = ({
               {jobDetail.city}, {jobDetail.state} {jobDetail.zipcode}
             </p>
           </div>
+        </SectionWrapper>
+
+        <SectionWrapper title="Listing Images">
+          {jobDetail.listingImages.length > 0 ? (
+            <ImageSlider
+              images={jobDetail.listingImages.map((image: any) => image.url)}
+            ></ImageSlider>
+          ) : (
+            <img
+              style={{ width: "100%", height: "100%" }}
+              src={no_image_photo}
+              alt={"listing-image"}
+            />
+          )}
+        </SectionWrapper>
+
+        <SectionWrapper title="Description">
+          <div>{jobDetail.description}</div>
         </SectionWrapper>
 
         <SectionWrapper title="Posted By:">
@@ -215,9 +231,6 @@ const JobDetailComponent = ({
           </Box>
         </SectionWrapper>
 
-        <SectionWrapper title="Description">
-          <div>{jobDetail.description}</div>
-        </SectionWrapper>
         {allowEdit ? null : (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Button

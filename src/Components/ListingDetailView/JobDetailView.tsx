@@ -9,15 +9,18 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { formatTimeAgo } from "../../utils/helperMethods";
+import {
+  formatTimeAgo,
+  makeLocaleString,
+  makeLocaleDate,
+  currencyFormat,
+} from "../../utils/helperMethods";
 import apiAgent from "../../utils/apiAgent";
 
+import avatar_image from "../../Assets/Images/img_avatar.png";
 import job_icon from "../../Assets/Images/job-search.png";
 import { PaginationResponse } from "../../utils/commonTypes";
 import JobDetailComponent from "./JobDetailComponent";
-import { ConversationComponent } from "./ConversationComponent";
-import { paginationSearchParams } from "../../utils/defaultValues";
-import { colors } from "../../style/styleVariables";
 
 const JobDetailView = () => {
   const navigate = useNavigate();
@@ -36,28 +39,23 @@ const JobDetailView = () => {
     setOpen(newOpen);
   };
 
-  const drawerBleeding = 56;
-
   const Puller = styled("div")(({ theme }) => ({
-    width: 45,
+    width: 30,
     height: 6,
     backgroundColor: "grey",
     borderRadius: 3,
     position: "absolute",
-    top: 12,
-    left: "calc(50% - 22px)",
+    top: 8,
+    left: "calc(50% - 15px)",
   }));
 
-  const StyleBox = styled("div")(({ theme }) => ({
-    position: "absolute",
-    top: -drawerBleeding,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    visibility: "visible",
-    right: 0,
-    left: 0,
-    backgroundColor: colors.lightBlue,
-  }));
+  const jobSearchParams = {
+    limit: 10,
+    page: 1,
+    dir: "DESC",
+    sortBy: "updatedDate",
+    categoryId: "1",
+  };
 
   useEffect(() => {
     if (listingId) {
@@ -88,13 +86,11 @@ const JobDetailView = () => {
 
   // load more param support infinite scroll
   const getAllJobs = async (loadMore?: boolean) => {
-    let searchQueryParams: string = `limit=${
-      paginationSearchParams.limit
-    }&page=${
-      loadMore ? ++paginationSearchParams.page : paginationSearchParams.page
-    }&dir=${paginationSearchParams.dir}&sortBy=${
-      paginationSearchParams.sortBy
-    }&categoryId=${paginationSearchParams.categoryId}`;
+    let searchQueryParams: string = `limit=${jobSearchParams.limit}&page=${
+      loadMore ? ++jobSearchParams.page : jobSearchParams.page
+    }&dir=${jobSearchParams.dir}&sortBy=${jobSearchParams.sortBy}&categoryId=${
+      jobSearchParams.categoryId
+    }`;
 
     (async () => {
       try {
@@ -124,14 +120,7 @@ const JobDetailView = () => {
       }
     })();
   };
-  const onSuccessAfterEditingListing = async () => {
-    if (listingId) {
-      await getJobById(listingId);
-    }
 
-    //FIXME: can't get updated active job card after updating job
-    await getAllJobs();
-  };
   return (
     <Container>
       <Grid container spacing={10}>
@@ -143,7 +132,7 @@ const JobDetailView = () => {
             <InfiniteScroll
               dataLength={jobs.total}
               next={() => getAllJobs(true)}
-              hasMore={jobs.results.length !== jobs.total}
+              hasMore={jobs.results.length != jobs.total}
               loader={
                 <h4 style={{ textAlign: "center" }}>Loading more jobs...</h4>
               }
@@ -160,17 +149,31 @@ const JobDetailView = () => {
                         justifyContent: "flex-start",
                       }}
                     >
-                      <img
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                          borderRadius: "50%",
-                          marginTop: "20px",
-                          marginRight: "20px",
-                        }}
-                        src={job_icon}
-                        alt="job"
-                      ></img>
+                      {job.listingImages.length > 0 ? (
+                        <img
+                          style={{
+                            width: "120px",
+                            height: "120px",
+                            borderRadius: "50%",
+                            marginTop: "20px",
+                            marginRight: "20px",
+                          }}
+                          src={job.listingImages[0].url}
+                          alt="job"
+                        ></img>
+                      ) : (
+                        <img
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            borderRadius: "50%",
+                            marginTop: "20px",
+                            marginRight: "20px",
+                          }}
+                          src={job_icon}
+                          alt="job"
+                        ></img>
+                      )}
 
                       <div
                         className={
@@ -191,9 +194,10 @@ const JobDetailView = () => {
                       >
                         <h2>{job.title}</h2>
                         <h3>
-                          $
-                          {job.job.minRate +
-                            (job.job.maxRate ? ` - $${job.job.maxRate}` : "")}
+                          {currencyFormat(job.job.minRate) +
+                            (job.job.maxRate
+                              ? ` - ${currencyFormat(job.job.maxRate)}`
+                              : "")}
                           /hour
                         </h3>
                         <p>
@@ -214,7 +218,6 @@ const JobDetailView = () => {
           <JobDetailComponent
             jobDetail={jobDetail}
             isLargeScreen={isLargeScreen}
-            onSuccessAfterEditingListing={onSuccessAfterEditingListing}
           />
         ) : null}
 
@@ -225,28 +228,14 @@ const JobDetailView = () => {
             open={open}
             onClose={toggleDrawer(false)}
             onOpen={toggleDrawer(true)}
-            swipeAreaWidth={drawerBleeding}
+            swipeAreaWidth={80}
             disableSwipeToOpen={false}
             ModalProps={{
               keepMounted: true,
             }}
             className="job-detail-drawer"
           >
-            <StyleBox>
-              <Puller />
-              <Typography
-                sx={{
-                  p: 2,
-                  color: colors.textColor,
-                  textAlign: "center",
-                  padding: 0,
-                  margin: "24px 0 8px 0",
-                }}
-              >
-                Listing Description
-              </Typography>
-            </StyleBox>
-
+            <Puller />
             <JobDetailComponent
               jobDetail={jobDetail}
               isLargeScreen={isLargeScreen}
@@ -257,9 +246,11 @@ const JobDetailView = () => {
     </Container>
   );
 };
-
-//end debug
 export default JobDetailView;
 const Container = styled.div`
   margin: 40px;
 `;
+
+const jobListContainerStyle = {
+  maxHeight: "100vh",
+};

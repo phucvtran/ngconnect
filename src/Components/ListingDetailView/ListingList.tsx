@@ -181,11 +181,7 @@ const ListingList = ({ getListingsCallback, allowEdit = false }: Props) => {
             {listings?.results.map((prop: any) => {
               return (
                 <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }} key={prop.id}>
-                  <ListingCard
-                    listing={prop}
-                    allowEdit={allowEdit}
-                    onSuccessAfterEditingListing={getAllListings}
-                  />
+                  <ListingCard listing={prop} allowEdit={allowEdit} />
                 </Grid>
               );
             })}
